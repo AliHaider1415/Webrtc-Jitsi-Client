@@ -56,12 +56,10 @@ export default function Login() {
         {({
           errors,
           touched,
-          isValidating,
           values,
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting,
         }) => (
           <Form>
             <ThemeProvider theme={defaultTheme}>

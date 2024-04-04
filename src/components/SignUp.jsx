@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,8 +18,22 @@ import InputLabel from "@mui/material/InputLabel";
 const theme = createTheme();
 
 export default function SignUp() {
+  const [activeForm, setActiveForm] = useState("JobSeeker");
+
   const changeForm = (value) => {
-    // Add your code here to handle the form change
+    switch (value) {
+      case "JobSeeker":
+        setActiveForm("JobSeeker");
+        break;
+      case "Employer":
+        setActiveForm("Employer");
+        break;
+      case "Trainer":
+        setActiveForm("Trainer");
+        break;
+      default:
+        setActiveForm("JobSeeker");
+    }
   };
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -50,28 +64,31 @@ export default function SignUp() {
           }}
         >
           <Typography component="h6" variant="h6">
-            Create Job Seeker Account
+            Create {activeForm} Account
           </Typography>
 
           <Grid container spacing={3} justifyContent="center">
             <Grid item xs={12} sm={4}>
               <Button
-                variant="contained"
-                onClick={() => changeForm("jobseeker")}
+                variant={activeForm === "JobSeeker" ? "contained" : "outlined"}
+                onClick={() => changeForm("JobSeeker")}
               >
                 JobSeeker
               </Button>
             </Grid>
             <Grid item xs={12} sm={4}>
               <Button
-                variant="contained"
-                onClick={() => changeForm("employer")}
+                variant={activeForm === "Employer" ? "contained" : "outlined"}
+                onClick={() => changeForm("Employer")}
               >
                 Employer
               </Button>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Button variant="contained" onClick={() => changeForm("trainer")}>
+              <Button
+                variant={activeForm === "Trainer" ? "contained" : "outlined"}
+                onClick={() => changeForm("Trainer")}
+              >
                 Trainer
               </Button>
             </Grid>
