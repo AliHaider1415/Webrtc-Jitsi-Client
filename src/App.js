@@ -1,13 +1,18 @@
 import "./App.css";
 import { Button } from "@mui/material";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SignUp from "./components/SignUp";
+import Login from "./components/Login";
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>React App</h1>
-        <h1>Search O Pal Assesment Form</h1>
-        <Button variant="contained">Hello world</Button>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/sign-up" element={<SignUp />} />
+          </Routes>
+        </BrowserRouter>
       </header>
     </div>
   );
