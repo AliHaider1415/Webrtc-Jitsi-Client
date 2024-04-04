@@ -1,10 +1,8 @@
-import * as React from "react";
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -17,73 +15,83 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://www.searchopal.com">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const defaultTheme = createTheme();
+const theme = createTheme();
 
 export default function SignUp() {
+  const changeForm = (value) => {
+    // Add your code here to handle the form change
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
+      name: data.get("name"),
+      country: data.get("country"),
       email: data.get("email"),
+      contactNumber: data.get("contactNumber"),
       password: data.get("password"),
     });
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: theme.spacing(3),
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             bgcolor: "background.paper",
-            boxShadow: 3,
-            borderRadius: 1,
-            padding: 3,
+            boxShadow: theme.shadows[3],
+            borderRadius: theme.shape.borderRadius,
+            padding: theme.spacing(3),
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Typography component="h6" variant="h6">
+            Create Job Seeker Account
+          </Typography>
+
+          <Grid container spacing={3} justifyContent="center">
+            <Grid item xs={12} sm={4}>
+              <Button
+                variant="contained"
+                onClick={() => changeForm("jobseeker")}
+              >
+                JobSeeker
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Button
+                variant="contained"
+                onClick={() => changeForm("employer")}
+              >
+                Employer
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Button variant="contained" onClick={() => changeForm("trainer")}>
+                Trainer
+              </Button>
+            </Grid>
+          </Grid>
+          <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
+          <form onSubmit={handleSubmit} noValidate>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
-                  name="Name"
+                  name="name"
                   required
                   fullWidth
-                  id="Name"
-                  label="First Name"
+                  id="name"
+                  label="Name"
                   autoFocus
                 />
               </Grid>
@@ -99,10 +107,10 @@ export default function SignUp() {
                     <MenuItem value="USA">USA</MenuItem>
                     <MenuItem value="Canada">Canada</MenuItem>
                     <MenuItem value="UK">UK</MenuItem>
+                    <MenuItem value="Pakistan">Pakistan</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
-
               <Grid item xs={12}>
                 <TextField
                   required
@@ -119,12 +127,11 @@ export default function SignUp() {
                   fullWidth
                   id="phone"
                   label="Contact Number"
-                  type="phone"
+                  type="number"
                   name="contactNumber"
                   autoComplete="tel"
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <TextField
                   required
@@ -141,7 +148,8 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              color="primary"
+              sx={{ mt: theme.spacing(3), mb: theme.spacing(2) }}
             >
               Sign Up
             </Button>
@@ -152,9 +160,8 @@ export default function SignUp() {
                 </Link>
               </Grid>
             </Grid>
-          </Box>
+          </form>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
