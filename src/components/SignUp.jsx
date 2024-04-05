@@ -10,12 +10,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
+import CountrySelect from "./CountrySelect";
+import countries from "../data/countries";
 const theme = createTheme();
 
 const SignUpSchema = Yup.object().shape({
@@ -162,27 +160,19 @@ export default function SignUp() {
                       )}
                     </Grid>
                     <Grid item xs={12}>
-                      <FormControl fullWidth>
-                        <InputLabel id="country-label">Country</InputLabel>
-                        <Select
-                          labelId="country-label"
-                          id="country"
-                          name="country"
-                          label="Country"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.country}
-                          error={errors.country && touched.country}
-                          helperText={
-                            errors.country && touched.country && errors.country
-                          }
-                        >
-                          <MenuItem value="USA">USA</MenuItem>
-                          <MenuItem value="Canada">Canada</MenuItem>
-                          <MenuItem value="UK">UK</MenuItem>
-                          <MenuItem value="Pakistan">Pakistan</MenuItem>
-                        </Select>
-                      </FormControl>
+                      <CountrySelect
+                        countries={countries}
+                        id="country"
+                        name="country"
+                        label="Country"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.country}
+                        error={errors.country && touched.country}
+                        helperText={
+                          errors.country && touched.country && errors.country
+                        }
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
