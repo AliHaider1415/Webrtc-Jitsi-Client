@@ -1,5 +1,6 @@
 import React from "react";
+import Navbar from "./Navbar";
 
 export default function Home() {
-  return <div>Hello World from MSS!</div>;
+  return <div className="Navbar"></div>;
 }
