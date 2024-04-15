@@ -12,6 +12,9 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form } from "formik";
 import { LoginSchema } from "../utils/Schemas";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -33,6 +36,32 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 export default function Login() {
+  const navigate = useNavigate();
+  const showToastMessage = (message) => {
+    console.log(message);
+    if (message.error) {
+      toast.error(message.error);
+    } else {
+      toast.success(message.message);
+      setTimeout(() => {
+        navigate("/"); // Navigate to the home page after a delay
+      }, 2000);
+    }
+  };
+  const handleLogin = async (values) => {
+    const response = await fetch("http://127.0.0.1:8000/accounts/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: values.email,
+        password: values.password,
+      }),
+    });
+    const json = await response.json();
+    showToastMessage(json);
+  };
   return (
     <div>
       <Formik
@@ -42,7 +71,7 @@ export default function Login() {
         }}
         validationSchema={LoginSchema}
         onSubmit={(values) => {
-          console.log(values);
+          handleLogin(values);
         }}
       >
         {({
@@ -138,6 +167,7 @@ export default function Login() {
           </Form>
         )}
       </Formik>
+      <ToastContainer />
     </div>
   );
 }
