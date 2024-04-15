@@ -17,29 +17,31 @@ import { SignUpSchema } from "../utils/Schemas";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 const theme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [activeForm, setActiveForm] = useState("JobSeeker");
+
   const showToastMessage = (message) => {
     console.log(message);
     if (message.error) {
       toast.error(message.error, {});
     } else {
-      toast.success("Account Created Successfully", {});
+      toast.success("Your account has been created successfully", {});
       localStorage.setItem("access", message.access);
       setTimeout(() => {
         navigate("/");
       }, 2000);
     }
   };
-  const [activeForm, setActiveForm] = useState("JobSeeker");
 
   const changeForm = (value) => {
     setActiveForm(value);
   };
 
-  const handleSignUp = async (values) => {
+  const signUpMutation = useMutation(async (values) => {
     let apiUrl;
     switch (activeForm) {
       case "Employer":
@@ -55,6 +57,7 @@ export default function SignUp() {
         break;
     }
 
+    console.log(activeForm);
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
@@ -73,7 +76,17 @@ export default function SignUp() {
     });
 
     const json = await response.json();
-    showToastMessage(json);
+    return json;
+  });
+
+  const handleSignUp = async (values) => {
+    try {
+      const data = await signUpMutation.mutateAsync(values);
+      showToastMessage(data);
+    } catch (error) {
+      console.error("An error occurred:", error);
+      toast.error("An error occurred while signing up");
+    }
   };
 
   return (
