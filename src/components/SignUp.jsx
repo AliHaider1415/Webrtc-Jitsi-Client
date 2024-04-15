@@ -57,7 +57,6 @@ export default function SignUp() {
         break;
     }
 
-    console.log(activeForm);
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
@@ -70,8 +69,7 @@ export default function SignUp() {
         password: values.password,
         country: values.country,
         is_candidate: activeForm === "JobSeeker",
-        is_employer: activeForm === "Employer",
-        is_trainer: activeForm === "Trainer",
+        is_company_handler: activeForm === "Employer",
       }),
     });
 
@@ -289,7 +287,7 @@ export default function SignUp() {
                       onClick={handleSubmit}
                       sx={{ mt: theme.spacing(3), mb: theme.spacing(2) }}
                     >
-                      Sign Up
+                      {signUpMutation.isLoading ? "Signing up..." : "Sign Up"}
                     </Button>
                     <Grid container justifyContent="center">
                       <Grid item>
