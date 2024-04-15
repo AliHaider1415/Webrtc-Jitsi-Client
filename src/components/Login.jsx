@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form } from "formik";
-import { useNavigate } from "react-router-dom";
 import { LoginSchema } from "../utils/Schemas";
 
 function Copyright(props) {
@@ -34,7 +33,6 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 export default function Login() {
-  const navigate = useNavigate();
   return (
     <div>
       <Formik
@@ -45,7 +43,6 @@ export default function Login() {
         validationSchema={LoginSchema}
         onSubmit={(values) => {
           console.log(values);
-          navigate("/");
         }}
       >
         {({

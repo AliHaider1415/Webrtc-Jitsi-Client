@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form } from "formik";
 import CountrySelect from "./CountrySelect";
-import countries from "../data/countries";
+import countries from "../utils/countries";
 import { SignUpSchema } from "../utils/Schemas";
 const theme = createTheme();
 
@@ -29,10 +29,8 @@ export default function SignUp() {
         email: "",
         password: "",
         name: "",
-        companyName: "",
         country: "",
-        contactNumber: "",
-        activeForm: "JobSeeker",
+        phone: "",
       }}
       validationSchema={SignUpSchema}
       onSubmit={(values) => {
@@ -111,20 +109,18 @@ export default function SignUp() {
                       {activeForm === "Employer" ? (
                         <TextField
                           autoComplete="given-name"
-                          name="companyName"
+                          name="name"
                           required
                           fullWidth
-                          id="companyName"
+                          id="name"
                           label="Company Name"
                           autoFocus
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          value={values.companyName}
-                          error={errors.companyName && touched.companyName}
+                          value={values.name}
+                          error={errors.name && touched.name}
                           helperText={
-                            errors.companyName &&
-                            touched.companyName &&
-                            errors.companyName
+                            errors.name && touched.name && errors.name
                           }
                         />
                       ) : (
@@ -183,18 +179,16 @@ export default function SignUp() {
                         required
                         fullWidth
                         id="phone"
+                        type="tel"
                         label="Contact Number"
-                        type="number"
-                        name="contactNumber"
+                        name="phone"
                         autoComplete="tel"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.contactNumber}
-                        error={errors.contactNumber && touched.contactNumber}
+                        value={values.phone}
+                        error={errors.phone && touched.phone}
                         helperText={
-                          errors.contactNumber &&
-                          touched.contactNumber &&
-                          errors.contactNumber
+                          errors.phone && touched.phone && errors.phone
                         }
                       />
                     </Grid>
