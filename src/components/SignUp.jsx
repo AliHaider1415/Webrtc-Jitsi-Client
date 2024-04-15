@@ -10,24 +10,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import CountrySelect from "./CountrySelect";
 import countries from "../data/countries";
+import { SignUpSchema } from "../utils/Schemas";
 const theme = createTheme();
-
-const SignUpSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().required("Required"),
-
-  companyName: Yup.string().when("activeForm", {
-    is: "Employer",
-    then: Yup.string().required("Required"),
-  }),
-  country: Yup.string().required("Required"),
-  contactNumber: Yup.string().required("Required"),
-  // .matches(/^\d{11}$/, "Contact number must be exactly 11 digits"),
-});
 
 export default function SignUp() {
   const [activeForm, setActiveForm] = useState("JobSeeker");
