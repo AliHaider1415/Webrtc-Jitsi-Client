@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import userAuthStore from "../store/userAuthStore/userAuthStore";
 
 function Copyright(props) {
   return (
@@ -38,6 +39,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
+  localStorage.removeItem("access");
   const navigate = useNavigate();
 
   const showToastMessage = (message) => {
@@ -48,6 +50,9 @@ export default function Login() {
       toast.success(message.message, {});
       localStorage.setItem("access", message.access);
       setTimeout(() => {
+        userAuthStore.setState({ user: message.UserType });
+        console.log(message);
+
         navigate("/");
       }, 2000);
     }
@@ -80,6 +85,7 @@ export default function Login() {
 
   return (
     <div>
+      {console.log(userAuthStore.getState().user)}
       <Formik
         initialValues={{
           email: "",

@@ -1,6 +1,13 @@
 import React from "react";
-import Navbar from "./Navbar";
+import SideBar from "./SideBar";
+import userAuthStore from "../store/userAuthStore/userAuthStore";
 
 export default function Home() {
-  return <div className="Navbar"></div>;
+  const auth = localStorage.getItem("access");
+  return (
+    <div>
+      {console.log(auth)}
+      <SideBar />
+    </div>
+  );
 }

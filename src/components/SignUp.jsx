@@ -18,6 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import userAuthStore from "../store/userAuthStore/userAuthStore";
 const theme = createTheme();
 
 export default function SignUp() {
@@ -25,12 +26,13 @@ export default function SignUp() {
   const [activeForm, setActiveForm] = useState("JobSeeker");
 
   const showToastMessage = (message) => {
-    console.log(message);
     if (message.error) {
       toast.error(message.error, {});
     } else {
       toast.success("Your account has been created successfully", {});
       localStorage.setItem("access", message.access);
+      userAuthStore.setIsLoggedIn(true);
+      userAuthStore.setUser(activeForm);
       setTimeout(() => {
         navigate("/");
       }, 2000);
