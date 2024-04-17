@@ -39,7 +39,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
-  localStorage.removeItem("access");
+  // localStorage.removeItem("access");
   const navigate = useNavigate();
 
   const showToastMessage = (message) => {
@@ -48,6 +48,7 @@ export default function Login() {
       toast.error(message.error, {});
     } else {
       toast.success(message.message, {});
+      console.log(message.access);
       localStorage.setItem("access", message.access);
       setTimeout(() => {
         userAuthStore.setState({ user: message.UserType });
@@ -86,6 +87,7 @@ export default function Login() {
   return (
     <div>
       {console.log(userAuthStore.getState().user)}
+      {console.log(localStorage.getItem("access"))}
       <Formik
         initialValues={{
           email: "",

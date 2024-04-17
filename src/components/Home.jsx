@@ -4,9 +4,11 @@ import userAuthStore from "../store/userAuthStore/userAuthStore";
 
 export default function Home() {
   const auth = localStorage.getItem("access");
+  const user = userAuthStore((state) => state.user);
   return (
     <div>
-      {console.log(auth)}
+      {console.log(userAuthStore.getState().user)}
+      {console.log(localStorage.getItem("access"))}
       <SideBar />
     </div>
   );
