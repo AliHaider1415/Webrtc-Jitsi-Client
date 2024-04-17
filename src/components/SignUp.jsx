@@ -24,6 +24,7 @@ const theme = createTheme();
 export default function SignUp() {
   const navigate = useNavigate();
   const [activeForm, setActiveForm] = useState("JobSeeker");
+  const updateUser = userAuthStore((state) => state.setUser);
 
   const showToastMessage = (message) => {
     if (message.error) {
@@ -31,8 +32,8 @@ export default function SignUp() {
     } else {
       toast.success("Your account has been created successfully", {});
       localStorage.setItem("access", message.access);
-      userAuthStore.setIsLoggedIn(true);
-      userAuthStore.setUser(activeForm);
+
+      updateUser(activeForm);
       setTimeout(() => {
         navigate("/");
       }, 2000);

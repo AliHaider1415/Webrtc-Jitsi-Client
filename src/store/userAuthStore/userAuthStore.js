@@ -1,9 +1,17 @@
 import { create } from "zustand";
 
+const initialUser = localStorage.getItem("user") || null;
+
 const userAuthStore = create((set) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-  logout: () => set({ user: null }),
+  user: initialUser,
+  setUser: (user) => {
+    set({ user });
+    localStorage.setItem("user", user);
+  },
+  logout: () => {
+    set({ user: null });
+    localStorage.removeItem("user");
+  },
   isLoggedIn: () => {
     return userAuthStore.getState().user !== null;
   },

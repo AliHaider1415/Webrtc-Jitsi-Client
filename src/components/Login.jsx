@@ -39,8 +39,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
-  // localStorage.removeItem("access");
   const navigate = useNavigate();
+  const updateUser = userAuthStore((state) => state.setUser);
 
   const showToastMessage = (message) => {
     console.log(message);
@@ -51,7 +51,8 @@ export default function Login() {
       console.log(message.access);
       localStorage.setItem("access", message.access);
       setTimeout(() => {
-        userAuthStore.setState({ user: message.UserType });
+        // userAuthStore.setState({ user: message.UserType });
+        updateUser(message.UserType);
         console.log(message);
 
         navigate("/");
