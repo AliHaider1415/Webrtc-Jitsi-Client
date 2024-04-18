@@ -17,6 +17,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import userAuthStore from "../../../store/userAuthStore/userAuthStore";
+import url from "../../../utils/api";
+import { useEffect } from "react";
 
 function Copyright(props) {
   return (
@@ -39,8 +41,12 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
+  useEffect(() => {
+    logout();
+  }, []);
   const navigate = useNavigate();
   const updateUser = userAuthStore((state) => state.setUser);
+  const logout = userAuthStore((state) => state.logout);
 
   const showToastMessage = (message) => {
     console.log(message);
@@ -60,7 +66,8 @@ export default function Login() {
   };
 
   const loginMutation = useMutation(async (values) => {
-    const response = await fetch("http://127.0.0.1:8000/accounts/login", {
+    const protocol = window.location.protocol;
+    const response = await fetch(`${protocol}//${url}/accounts/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,8 +93,6 @@ export default function Login() {
 
   return (
     <div>
-      {console.log(userAuthStore.getState().user)}
-      {console.log(localStorage.getItem("access"))}
       <Formik
         initialValues={{
           email: "",
@@ -192,7 +197,6 @@ export default function Login() {
           </Form>
         )}
       </Formik>
-      <ToastContainer />
     </div>
   );
 }

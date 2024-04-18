@@ -10,6 +10,7 @@ const userAuthStore = create((set) => ({
   logout: () => {
     set({ user: null });
     localStorage.removeItem("user");
+    localStorage.removeItem("access");
   },
   isLoggedIn: () => {
     return userAuthStore.getState().user !== null;

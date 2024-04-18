@@ -14,14 +14,20 @@ import { Formik, Form } from "formik";
 import countries from "../../../utils/countries";
 import CountrySelect from "../../../components/common/CountrySelect";
 import { SignUpSchema } from "../../../utils/Schemas";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import userAuthStore from "../../../store/userAuthStore/userAuthStore";
+import url from "../../../utils/api";
+import { useEffect } from "react";
 const theme = createTheme();
 
 export default function SignUp() {
+  const logout = userAuthStore((state) => state.logout);
+  useEffect(() => {
+    logout();
+  }, []);
   const navigate = useNavigate();
   const [activeForm, setActiveForm] = useState("JobSeeker");
   const updateUser = userAuthStore((state) => state.setUser);
@@ -45,16 +51,18 @@ export default function SignUp() {
   };
 
   const signUpMutation = useMutation(async (values) => {
+    const protocol = window.location.protocol;
     let apiUrl;
+
     switch (activeForm) {
       case "Employer":
-        apiUrl = "http://127.0.0.1:8000/company/company-signup";
+        apiUrl = `${protocol}//${url}/company/company-signup`;
         break;
       case "JobSeeker":
-        apiUrl = "http://127.0.0.1:8000/candidates/user-signup";
+        apiUrl = `${protocol}//${url}/candidates/user-signup`;
         break;
       case "Trainer":
-        apiUrl = "http://127.0.0.1:8000/candidates/user-signup";
+        apiUrl = `${protocol}//${url}/candidates/user-signup`;
         break;
       default:
         break;
@@ -300,7 +308,6 @@ export default function SignUp() {
                       </Grid>
                     </Grid>
                   </form>
-                  <ToastContainer />
                 </Box>
               </Container>
             </ThemeProvider>

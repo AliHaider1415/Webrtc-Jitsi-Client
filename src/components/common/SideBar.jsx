@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import userAuthStore from "../../store/userAuthStore/userAuthStore";
 import LogoutIcon from "@mui/icons-material/Logout";
-
 const drawerWidth = 240;
 
 export default function SideBar() {
@@ -41,7 +40,6 @@ export default function SideBar() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("access");
     logout();
     navigate("/login");
   };

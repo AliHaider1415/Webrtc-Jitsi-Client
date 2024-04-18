@@ -11,7 +11,8 @@ import CreateAssessment from "./pages/company-assessment/create-assessment/Creat
 import AllAssessmentJobSeeker from "./pages/job-seeker-assesment/all-assessments/AllAssessmentJobSeeker";
 import SingleAssessmentJobSeeker from "./pages/job-seeker-assesment/Single-Assessment/SingleAssessmentJobSeeker";
 import Layout from "./layout/Layout";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const user = userAuthStore((state) => state.user);
 
@@ -20,6 +21,7 @@ function App() {
       {" "}
       <header className="App-header">
         <BrowserRouter>
+          {/* <ToastContainer /> */}
           <Layout>
             <Routes>
               {/* ---------------------------------------- */}
@@ -85,6 +87,7 @@ function App() {
               />
             </Routes>
           </Layout>
+          <ToastContainer />
         </BrowserRouter>
       </header>
     </div>
