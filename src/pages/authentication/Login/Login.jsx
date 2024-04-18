@@ -11,12 +11,12 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form } from "formik";
-import { LoginSchema } from "../utils/Schemas";
+import { LoginSchema } from "../../../utils/Schemas";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import userAuthStore from "../store/userAuthStore/userAuthStore";
+import userAuthStore from "../../../store/userAuthStore/userAuthStore";
 
 function Copyright(props) {
   return (
@@ -51,7 +51,6 @@ export default function Login() {
       console.log(message.access);
       localStorage.setItem("access", message.access);
       setTimeout(() => {
-        // userAuthStore.setState({ user: message.UserType });
         updateUser(message.UserType);
         console.log(message);
 

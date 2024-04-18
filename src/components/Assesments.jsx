@@ -1,5 +1,9 @@
 import React from "react";
 
-export default function Assesments() {
-  return <div>assessments</div>;
+export default function Assesments(props) {
+  return (
+    <div>
+      <h1>Assesments</h1>
+    </div>
+  );
 }

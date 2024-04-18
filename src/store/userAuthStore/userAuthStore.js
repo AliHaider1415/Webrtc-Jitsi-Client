@@ -1,5 +1,4 @@
 import { create } from "zustand";
-
 const initialUser = localStorage.getItem("user") || null;
 
 const userAuthStore = create((set) => ({

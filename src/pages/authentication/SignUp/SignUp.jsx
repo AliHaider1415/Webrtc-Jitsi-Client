@@ -11,14 +11,14 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form } from "formik";
-import CountrySelect from "./CountrySelect";
-import countries from "../utils/countries";
-import { SignUpSchema } from "../utils/Schemas";
+import countries from "../../../utils/countries";
+import CountrySelect from "../../../components/common/CountrySelect";
+import { SignUpSchema } from "../../../utils/Schemas";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import userAuthStore from "../store/userAuthStore/userAuthStore";
+import userAuthStore from "../../../store/userAuthStore/userAuthStore";
 const theme = createTheme();
 
 export default function SignUp() {
