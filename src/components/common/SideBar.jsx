@@ -92,7 +92,7 @@ export default function SideBar() {
         </List>
         <Divider />
         <List>
-          <ListItem button onClick={handleLogout}>
+          <ListItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>

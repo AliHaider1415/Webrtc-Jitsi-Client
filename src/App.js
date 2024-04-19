@@ -29,6 +29,11 @@ function App() {
               {/* Authentication Routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route
+                path="/company/create-assessment"
+                element={<CreateAssessment />}
+              />
+
               {/* ---------------------------------------- */}
 
               {/* Public Available Routes */}
@@ -55,14 +60,14 @@ function App() {
                 }
               />
               {/* Company will create a new assesment */}
-              <Route
-                path="/company/create-assesment"
+              {/* <Route
+                path="/company/create-assessment"
                 element={
                   <CompanyRoute user={user}>
                     <CreateAssessment />
                   </CompanyRoute>
                 }
-              />
+              /> */}
 
               {/* ---------------------------------------- */}
               {/* JobSeeker Routes */}
