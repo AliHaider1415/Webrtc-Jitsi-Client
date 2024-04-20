@@ -33,10 +33,11 @@ const QuestionSchema = Yup.object().shape({
     "Number of options should be non-negative"
   ),
   correct_ans: Yup.string(),
-  options: Yup.array()
-    .of(OptionSchema)
-    .min(2, "There must be atleast 2 options")
-    .required(),
+  options: Yup.array().of(OptionSchema),
 });
 
-export { LoginSchema, SignUpSchema, QuestionSchema };
+const AssessmentSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+});
+export { LoginSchema, SignUpSchema, QuestionSchema, AssessmentSchema };

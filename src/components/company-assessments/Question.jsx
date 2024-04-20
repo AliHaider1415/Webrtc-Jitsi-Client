@@ -23,22 +23,25 @@ const styles = {
   },
 };
 
-export default function Question() {
+export default function Question({ index, question, addQuestion }) {
   return (
     <Card className="mb-4">
       <CardBody>
-        <CardHeader>Question 1</CardHeader>
+        <CardHeader>Question {index + 1}</CardHeader>
         <Formik
-          initialValues={{
-            question_desc: "",
-            question_type: "MCQ",
-            question_point: "",
-            number_of_options: 2,
-            correct_ans: "",
-            options: [{ option_text: "" }, { option_text: "" }],
-          }}
+          initialValues={
+            question || {
+              question_desc: "",
+              question_type: "MCQ",
+              question_point: "",
+              number_of_options: 2,
+              correct_ans: "",
+              options: [{ option_text: "" }, { option_text: "" }],
+            }
+          }
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
+            addQuestion(index, values);
             console.log(values);
           }}
         >
