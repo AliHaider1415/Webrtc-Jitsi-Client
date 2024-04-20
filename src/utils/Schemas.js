@@ -28,18 +28,11 @@ const QuestionSchema = Yup.object().shape({
   question_point: Yup.number()
     .positive("Marks must be a positive number")
     .required("Marks of question is required"),
-  number_of_options: Yup.number().when("question_type", {
-    is: (val) => val === "MCQ" || "True Or False",
-    then: Yup.number()
-      .positive("Number of options must be a positive number")
-      .required("Number of options is required"),
-    otherwise: Yup.number().notRequired(),
-  }),
-  correct_ans: Yup.string().when("question_type", {
-    is: (val) => val === "MCQ" || "True Or False",
-    then: Yup.string().required("Correct Answer is required"),
-    otherwise: Yup.number().notRequired(),
-  }),
+  number_of_options: Yup.number().min(
+    0,
+    "Number of options should be non-negative"
+  ),
+  correct_ans: Yup.string(),
   options: Yup.array()
     .of(OptionSchema)
     .min(2, "There must be atleast 2 options")
