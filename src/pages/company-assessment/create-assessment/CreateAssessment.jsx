@@ -27,7 +27,14 @@ export default function CreateAssessmentForm() {
 
   const addQuestion = (index, question) => {
     const updatedQuestionsArray = [...questionsArray];
-    updatedQuestionsArray[index] = question;
+    updatedQuestionsArray.splice(index, 1);
+    setQuestionsArray(updatedQuestionsArray);
+  };
+
+  const removeQuestion = (index) => {
+    const updatedQuestionsArray = questionsArray.filter(
+      (question, i) => i !== index
+    );
     setQuestionsArray(updatedQuestionsArray);
   };
 
@@ -106,6 +113,7 @@ export default function CreateAssessmentForm() {
               index={index}
               question={question}
               addQuestion={addQuestion}
+              removeQuestion={removeQuestion}
             />
           ))}
         </Col>

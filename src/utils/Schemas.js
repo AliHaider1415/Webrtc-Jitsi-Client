@@ -32,7 +32,7 @@ const QuestionSchema = Yup.object().shape({
     0,
     "Number of options should be non-negative"
   ),
-  correct_ans: Yup.string(),
+  correct_ans: Yup.string().required("Correct answer is required"),
   options: Yup.array().of(OptionSchema),
 });
 

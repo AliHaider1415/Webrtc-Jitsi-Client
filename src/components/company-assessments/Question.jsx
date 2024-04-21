@@ -23,11 +23,24 @@ const styles = {
   },
 };
 
-export default function Question({ index, question, addQuestion }) {
+export default function Question({
+  index,
+  question,
+  addQuestion,
+  removeQuestion,
+}) {
   return (
     <Card className="mb-4">
       <CardBody>
-        <CardHeader>Question {index + 1}</CardHeader>
+        <div className="d-flex justify-content-between">
+          <CardHeader className="flex-fill">Question {index + 1}</CardHeader>
+          <div
+            className="btn-danger btn ml-3"
+            onClick={() => removeQuestion(index)}
+          >
+            Remove Question
+          </div>
+        </div>
         <Formik
           initialValues={
             question || {
@@ -41,7 +54,7 @@ export default function Question({ index, question, addQuestion }) {
           }
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
-            addQuestion(index, values);
+            // addQuestion(index, values);
             console.log(values);
           }}
         >
@@ -101,6 +114,11 @@ export default function Question({ index, question, addQuestion }) {
                     handleChange({
                       target: { name: "number_of_options", value: 2 },
                     });
+                    setFieldValue("options", [
+                      { option_text: "" },
+                      { option_text: "" },
+                    ]);
+                    setFieldValue("correct_ans", "");
                   } else if (e.target.value === "True Or False") {
                     handleChange({
                       target: { name: "number_of_options", value: 2 },
@@ -109,6 +127,12 @@ export default function Question({ index, question, addQuestion }) {
                       { option_text: "True" },
                       { option_text: "False" },
                     ]);
+                  } else {
+                    handleChange({
+                      target: { name: "number_of_options", value: 0 },
+                    });
+                    setFieldValue("options", []);
+                    setFieldValue("correct_ans", "non-specified");
                   }
                 }}
                 value={values.question_type}
@@ -123,47 +147,49 @@ export default function Question({ index, question, addQuestion }) {
                     {values.number_of_options > 0 &&
                       Array.from({ length: values.number_of_options }).map(
                         (_, index) => (
-                          <Col sm={6} key={index}>
+                          <Col sm={12} key={index}>
                             <FormGroup
                               style={{ position: "relative", height: "50px" }}
                             >
-                              <Input
-                                type="text"
-                                name={`options[${index}].option_text`}
-                                placeholder={`Option ${index + 1}`}
-                                value={values.options[index].option_text}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              {errors.options &&
-                                errors.options[index] &&
-                                errors.options[index].option_text &&
-                                touched.options &&
-                                touched.options[index] &&
-                                touched.options[index].option_text && (
-                                  <div
-                                    style={{
-                                      position: "absolute",
-                                      top: "100%",
-                                      left: 0,
-                                    }}
-                                  >
-                                    {errors.options[index].option_text}
+                              <div>
+                                <Input
+                                  type="text"
+                                  name={`options[${index}].option_text`}
+                                  placeholder={`Option ${index + 1}`}
+                                  value={values.options[index].option_text}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  style={
+                                    errors.options &&
+                                    errors.options[index] &&
+                                    errors.options[index].option_text &&
+                                    touched.options &&
+                                    touched.options[index] &&
+                                    touched.options[index].option_text
+                                      ? styles.error
+                                      : {}
+                                  }
+                                />
+                                {/* {errors.correct_ans && (
+                                  <div style={styles.errorMessage}>
+                                    {errors.correct_ans}
                                   </div>
-                                )}
-                              <Input
-                                type="radio"
-                                name="correct_ans"
-                                onChange={handleChange}
-                                value={values.options[index].option_text}
-                                className="radio-inside-input"
-                                style={{
-                                  position: "absolute",
-                                  right: "8px",
-                                  top: "50%",
-                                  transform: "translateY(-100%)",
-                                }}
-                              />
+                                )} */}
+                                <Input
+                                  type="radio"
+                                  name="correct_ans"
+                                  onChange={handleChange}
+                                  value={values.options[index].option_text}
+                                  className="radio-inside-input"
+                                  style={{
+                                    position: "absolute",
+                                    right: "8px",
+                                    top: "50%",
+                                    transform: "translateY(-100%)",
+                                    ...(errors.correct_ans ? styles.error : {}),
+                                  }}
+                                />
+                              </div>
                               {values.number_of_options > 2 && (
                                 <DeleteIcon
                                   onClick={() => {
@@ -180,7 +206,7 @@ export default function Question({ index, question, addQuestion }) {
                                   style={{
                                     position: "absolute",
                                     top: "5px",
-                                    left: "5px",
+                                    right: "-15px",
                                     cursor: "pointer",
                                   }}
                                 />
