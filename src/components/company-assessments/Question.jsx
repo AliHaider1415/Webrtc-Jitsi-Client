@@ -42,20 +42,20 @@ export default function Question({
           </div>
         </div>
         <Formik
-          initialValues={
-            question || {
-              question_desc: "",
-              question_type: "MCQ",
-              question_point: "",
-              number_of_options: 2,
-              correct_ans: "",
-              options: [{ option_text: "" }, { option_text: "" }],
-            }
-          }
+          initialValues={{
+            question_desc: question ? question.question_desc : "",
+            question_type: question ? question.question_type : "MCQ",
+            question_point: question ? question.question_point : "",
+            number_of_options: question ? question.number_of_options : 2,
+            correct_ans: question ? question.correct_ans : "",
+            options: question
+              ? question.options
+              : [{ option_text: "" }, { option_text: "" }],
+          }}
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
-            // addQuestion(index, values);
             console.log(values);
+            addQuestion(index, values);
           }}
         >
           {({
@@ -66,8 +66,9 @@ export default function Question({
             handleBlur,
             handleSubmit,
             setFieldValue,
+            isValid,
           }) => (
-            <Form onSubmit={handleSubmit}>
+            <Form onBlur={handleSubmit}>
               <FormGroup className="mt-2">
                 <Input
                   type="textarea"
@@ -141,80 +142,72 @@ export default function Question({
                 <option value="Short">Short Answer</option>
                 <option value="True Or False">True/False</option>
               </Input>
+
               {values.question_type === "MCQ" && (
                 <>
                   <Row>
-                    {values.number_of_options > 0 &&
-                      Array.from({ length: values.number_of_options }).map(
-                        (_, index) => (
-                          <Col sm={12} key={index}>
-                            <FormGroup
-                              style={{ position: "relative", height: "50px" }}
-                            >
-                              <div>
-                                <Input
-                                  type="text"
-                                  name={`options[${index}].option_text`}
-                                  placeholder={`Option ${index + 1}`}
-                                  value={values.options[index].option_text}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  style={
-                                    errors.options &&
-                                    errors.options[index] &&
-                                    errors.options[index].option_text &&
-                                    touched.options &&
-                                    touched.options[index] &&
-                                    touched.options[index].option_text
-                                      ? styles.error
-                                      : {}
-                                  }
-                                />
-                                {/* {errors.correct_ans && (
-                                  <div style={styles.errorMessage}>
-                                    {errors.correct_ans}
-                                  </div>
-                                )} */}
-                                <Input
-                                  type="radio"
-                                  name="correct_ans"
-                                  onChange={handleChange}
-                                  value={values.options[index].option_text}
-                                  className="radio-inside-input"
-                                  style={{
-                                    position: "absolute",
-                                    right: "8px",
-                                    top: "50%",
-                                    transform: "translateY(-100%)",
-                                    ...(errors.correct_ans ? styles.error : {}),
-                                  }}
-                                />
-                              </div>
-                              {values.number_of_options > 2 && (
-                                <DeleteIcon
-                                  onClick={() => {
-                                    const updatedOptions =
-                                      values.options.filter(
-                                        (option, idx) => idx !== index
-                                      );
-                                    setFieldValue("options", updatedOptions);
-                                    setFieldValue(
-                                      "number_of_options",
-                                      updatedOptions.length
-                                    );
-                                  }}
-                                  style={{
-                                    position: "absolute",
-                                    top: "5px",
-                                    right: "-15px",
-                                    cursor: "pointer",
-                                  }}
-                                />
-                              )}
-                            </FormGroup>
-                          </Col>
-                        )
-                      )}
+                    {values.options.map((option, idx) => (
+                      <Col sm={12} key={idx}>
+                        <FormGroup
+                          style={{ position: "relative", height: "50px" }}
+                        >
+                          <div>
+                            <Input
+                              type="text"
+                              name={`options[${idx}].option_text`}
+                              placeholder={`Option ${idx + 1}`}
+                              value={option.option_text}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              style={
+                                errors.options &&
+                                errors.options[idx] &&
+                                errors.options[idx].option_text &&
+                                touched.options &&
+                                touched.options[idx] &&
+                                touched.options[idx].option_text
+                                  ? styles.error
+                                  : {}
+                              }
+                            />
+                            <Input
+                              type="radio"
+                              name="correct_ans"
+                              onChange={handleChange}
+                              value={option.option_text}
+                              className="radio-inside-input"
+                              style={{
+                                position: "absolute",
+                                right: "8px",
+                                top: "50%",
+                                transform: "translateY(-100%)",
+                                ...(errors.correct_ans ? styles.error : {}),
+                              }}
+                            />
+                          </div>
+                          {values.number_of_options > 2 && (
+                            <DeleteIcon
+                              onClick={() => {
+                                const updatedOptions = values.options.filter(
+                                  (_, i) => i !== idx
+                                );
+                                setFieldValue("options", updatedOptions);
+                                setFieldValue(
+                                  "number_of_options",
+                                  updatedOptions.length
+                                );
+                              }}
+                              style={{
+                                position: "absolute",
+                                top: "5px",
+                                right: "-15px",
+                                cursor: "pointer",
+                              }}
+                            />
+                          )}
+                        </FormGroup>
+                      </Col>
+                    ))}
                   </Row>
                   <div
                     className="btn-primary btn"
@@ -265,10 +258,6 @@ export default function Question({
                   ))}
                 </Row>
               )}
-
-              <div onClick={handleSubmit} className="btn-danger btn">
-                Click
-              </div>
             </Form>
           )}
         </Formik>

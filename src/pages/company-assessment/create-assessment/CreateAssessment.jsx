@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -11,6 +11,7 @@ import {
 import Question from "../../../components/company-assessments/Question";
 import { Formik, Form } from "formik";
 import { AssessmentSchema } from "../../../utils/Schemas";
+import { toast } from "react-toastify";
 
 const styles = {
   error: {
@@ -22,50 +23,63 @@ const styles = {
     marginTop: "0.2em",
   },
 };
+
 export default function CreateAssessmentForm() {
+  let totalPoints = 0;
   const [questionsArray, setQuestionsArray] = useState([]);
+  const handleCreateAssessment = (values) => {
+    if (questionsArray.length === 0) {
+      toast.error("Please add questions to the assessment");
+    }
+    console.log(values.title, values.description, totalPoints, questionsArray);
+  };
 
   const addQuestion = (index, question) => {
     const updatedQuestionsArray = [...questionsArray];
-    updatedQuestionsArray.splice(index, 1);
+    totalPoints += question.question_point;
+    updatedQuestionsArray[index] = question;
     setQuestionsArray(updatedQuestionsArray);
   };
 
-  const removeQuestion = (index) => {
-    const updatedQuestionsArray = questionsArray.filter(
-      (question, i) => i !== index
-    );
+  useEffect(() => {
+    console.log(questionsArray);
+  }, [questionsArray]);
+
+  const removeQuestion = (indexToRemove) => {
+    const updatedQuestionsArray = [...questionsArray];
+    totalPoints -= updatedQuestionsArray[indexToRemove].question_point;
+    updatedQuestionsArray.splice(indexToRemove, 1);
     setQuestionsArray(updatedQuestionsArray);
   };
 
   return (
-    <Container className="mt-5">
-      <Row>
-        <Col>
-          <h1 className="text-center mb-4">Assessment Creation</h1>
-        </Col>
-      </Row>
-      <Row className="justify-content-center">
-        <Col md={12} xs={12}>
-          <Formik
-            initialValues={{
-              title: "",
-              description: "",
-            }}
-            validationSchema={AssessmentSchema}
-            onSubmit={(values) => {
-              console.log(values);
-            }}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              setFieldValue,
-            }) => (
+    <Formik
+      initialValues={{
+        title: "",
+        description: "",
+      }}
+      validationSchema={AssessmentSchema}
+      onSubmit={(values) => {
+        handleCreateAssessment(values);
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldValue,
+      }) => (
+        <Container className="mt-5">
+          <Row>
+            <Col>
+              <h1 className="text-center mb-4">Assessment Creation</h1>
+            </Col>
+          </Row>
+          <Row className="justify-content-center">
+            <Col md={12} xs={12}>
               <Form>
                 <FormGroup>
                   <Label for="assessmentTitle">Assessment Title</Label>
@@ -101,32 +115,35 @@ export default function CreateAssessmentForm() {
                   )}
                 </FormGroup>
               </Form>
-            )}
-          </Formik>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {questionsArray.map((question, index) => (
-            <Question
-              key={index}
-              index={index}
-              question={question}
-              addQuestion={addQuestion}
-              removeQuestion={removeQuestion}
-            />
-          ))}
-        </Col>
-      </Row>
-      <Button
-        color="primary"
-        className="mb-3"
-        onClick={() => {
-          setQuestionsArray([...questionsArray, null]);
-        }}
-      >
-        Add Question
-      </Button>
-    </Container>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {questionsArray.map((question, index) => (
+                <Question
+                  key={index}
+                  index={index}
+                  question={question}
+                  addQuestion={addQuestion}
+                  removeQuestion={() => removeQuestion(index)}
+                />
+              ))}
+            </Col>
+          </Row>
+          <Button
+            color="primary"
+            className=""
+            onClick={() => {
+              setQuestionsArray([...questionsArray, null]);
+            }}
+          >
+            Add Question
+          </Button>
+          <div className="btn-success btn mx-3" onClick={handleSubmit}>
+            Submit Assessment
+          </div>
+        </Container>
+      )}
+    </Formik>
   );
 }
