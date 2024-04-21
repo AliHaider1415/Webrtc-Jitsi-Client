@@ -47,7 +47,7 @@ export default function CreateAssessmentForm() {
 
   const removeQuestion = (indexToRemove) => {
     const updatedQuestionsArray = [...questionsArray];
-    totalPoints -= updatedQuestionsArray[indexToRemove].question_point;
+    // totalPoints -= updatedQuestionsArray[indexToRemove].question_point;
     updatedQuestionsArray.splice(indexToRemove, 1);
     setQuestionsArray(updatedQuestionsArray);
   };

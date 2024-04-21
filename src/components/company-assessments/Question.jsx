@@ -29,6 +29,7 @@ export default function Question({
   addQuestion,
   removeQuestion,
 }) {
+  let qt;
   return (
     <Card className="mb-4">
       <CardBody>
@@ -43,14 +44,12 @@ export default function Question({
         </div>
         <Formik
           initialValues={{
-            question_desc: question ? question.question_desc : "",
-            question_type: question ? question.question_type : "MCQ",
-            question_point: question ? question.question_point : "",
-            number_of_options: question ? question.number_of_options : 2,
-            correct_ans: question ? question.correct_ans : "",
-            options: question
-              ? question.options
-              : [{ option_text: "" }, { option_text: "" }],
+            question_desc: "",
+            question_type: "MCQ",
+            question_point: "",
+            number_of_options: 2,
+            correct_ans: "",
+            options: [{ option_text: "" }, { option_text: "" }],
           }}
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
@@ -74,7 +73,9 @@ export default function Question({
                   type="textarea"
                   name="question_desc"
                   placeholder="Write your question here"
-                  value={values.question_desc}
+                  value={
+                    question ? question.question_desc : values.question_desc
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
                   style={
@@ -92,7 +93,9 @@ export default function Question({
                   type="number"
                   name="question_point"
                   placeholder="Marks of Question"
-                  value={values.question_point}
+                  value={
+                    question ? question.question_point : values.question_point
+                  }
                   onChange={handleChange}
                   onBlur={handleBlur}
                   style={
@@ -136,39 +139,196 @@ export default function Question({
                     setFieldValue("correct_ans", "non-specified");
                   }
                 }}
-                value={values.question_type}
+                value={question ? question.question_type : values.question_type}
               >
                 <option value="MCQ">Multiple Choice</option>
                 <option value="Short">Short Answer</option>
                 <option value="True Or False">True/False</option>
               </Input>
 
-              {values.question_type === "MCQ" && (
-                <>
-                  <Row>
-                    {values.options.map((option, idx) => (
-                      <Col sm={12} key={idx}>
-                        <FormGroup
-                          style={{ position: "relative", height: "50px" }}
-                        >
-                          <div>
+              {question
+                ? question.question_type === "MCQ" && (
+                    <>
+                      <Row>
+                        {question.options.map((option, idx) => (
+                          <Col sm={12} key={idx}>
+                            <FormGroup
+                              style={{ position: "relative", height: "50px" }}
+                            >
+                              <div>
+                                <Input
+                                  type="text"
+                                  name={`options[${idx}].option_text`}
+                                  placeholder={`Option ${idx + 1}`}
+                                  value={option.option_text}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  style={
+                                    errors.options &&
+                                    errors.options[idx] &&
+                                    errors.options[idx].option_text &&
+                                    touched.options &&
+                                    touched.options[idx] &&
+                                    touched.options[idx].option_text
+                                      ? styles.error
+                                      : {}
+                                  }
+                                />
+                                <Input
+                                  type="radio"
+                                  name="correct_ans"
+                                  onChange={handleChange}
+                                  value={option.option_text}
+                                  className="radio-inside-input"
+                                  style={{
+                                    position: "absolute",
+                                    right: "8px",
+                                    top: "50%",
+                                    transform: "translateY(-100%)",
+                                    ...(errors.correct_ans ? styles.error : {}),
+                                  }}
+                                />
+                              </div>
+                              {question.number_of_options > 2 && (
+                                <DeleteIcon
+                                  onClick={() => {
+                                    const updatedOptions =
+                                      question.options.filter(
+                                        (_, i) => i !== idx
+                                      );
+                                    setFieldValue("options", updatedOptions);
+                                    setFieldValue(
+                                      "number_of_options",
+                                      updatedOptions.length
+                                    );
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "5px",
+                                    right: "-15px",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        ))}
+                      </Row>
+                      <div
+                        className="btn-primary btn"
+                        onClick={() => {
+                          setFieldValue(
+                            "number_of_options",
+                            question.number_of_options + 1
+                          );
+                          setFieldValue("options", [
+                            ...question.options,
+                            { option_text: "" },
+                          ]);
+                        }}
+                      >
+                        Add Option
+                      </div>
+                    </>
+                  )
+                : values.question_type === "MCQ" && (
+                    <>
+                      <Row>
+                        {values.options.map((option, idx) => (
+                          <Col sm={12} key={idx}>
+                            <FormGroup
+                              style={{ position: "relative", height: "50px" }}
+                            >
+                              <div>
+                                <Input
+                                  type="text"
+                                  name={`options[${idx}].option_text`}
+                                  placeholder={`Option ${idx + 1}`}
+                                  value={option.option_text}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  style={
+                                    errors.options &&
+                                    errors.options[idx] &&
+                                    errors.options[idx].option_text &&
+                                    touched.options &&
+                                    touched.options[idx] &&
+                                    touched.options[idx].option_text
+                                      ? styles.error
+                                      : {}
+                                  }
+                                />
+                                <Input
+                                  type="radio"
+                                  name="correct_ans"
+                                  onChange={handleChange}
+                                  value={option.option_text}
+                                  className="radio-inside-input"
+                                  style={{
+                                    position: "absolute",
+                                    right: "8px",
+                                    top: "50%",
+                                    transform: "translateY(-100%)",
+                                    ...(errors.correct_ans ? styles.error : {}),
+                                  }}
+                                />
+                              </div>
+                              {values.number_of_options > 2 && (
+                                <DeleteIcon
+                                  onClick={() => {
+                                    const updatedOptions =
+                                      values.options.filter(
+                                        (_, i) => i !== idx
+                                      );
+                                    setFieldValue("options", updatedOptions);
+                                    setFieldValue(
+                                      "number_of_options",
+                                      updatedOptions.length
+                                    );
+                                  }}
+                                  style={{
+                                    position: "absolute",
+                                    top: "5px",
+                                    right: "-15px",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              )}
+                            </FormGroup>
+                          </Col>
+                        ))}
+                      </Row>
+                      <div
+                        className="btn-primary btn"
+                        onClick={() => {
+                          setFieldValue(
+                            "number_of_options",
+                            values.number_of_options + 1
+                          );
+                          setFieldValue("options", [
+                            ...values.options,
+                            { option_text: "" },
+                          ]);
+                        }}
+                      >
+                        Add Option
+                      </div>
+                    </>
+                  )}
+
+              {question
+                ? question.question_type === "True Or False" && (
+                    <Row>
+                      {question.options.map((option, idx) => (
+                        <Col sm={6} key={idx}>
+                          <FormGroup style={{ position: "relative" }}>
                             <Input
                               type="text"
                               name={`options[${idx}].option_text`}
                               placeholder={`Option ${idx + 1}`}
                               value={option.option_text}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              style={
-                                errors.options &&
-                                errors.options[idx] &&
-                                errors.options[idx].option_text &&
-                                touched.options &&
-                                touched.options[idx] &&
-                                touched.options[idx].option_text
-                                  ? styles.error
-                                  : {}
-                              }
+                              readOnly
+                              style={{ paddingRight: "30px" }}
                             />
                             <Input
                               type="radio"
@@ -180,84 +340,45 @@ export default function Question({
                                 position: "absolute",
                                 right: "8px",
                                 top: "50%",
-                                transform: "translateY(-100%)",
-                                ...(errors.correct_ans ? styles.error : {}),
+                                transform: "translateY(-70%)",
                               }}
                             />
-                          </div>
-                          {values.number_of_options > 2 && (
-                            <DeleteIcon
-                              onClick={() => {
-                                const updatedOptions = values.options.filter(
-                                  (_, i) => i !== idx
-                                );
-                                setFieldValue("options", updatedOptions);
-                                setFieldValue(
-                                  "number_of_options",
-                                  updatedOptions.length
-                                );
-                              }}
+                          </FormGroup>
+                        </Col>
+                      ))}
+                    </Row>
+                  )
+                : values.question_type === "True Or False" && (
+                    <Row>
+                      {values.options.map((option, index) => (
+                        <Col sm={6} key={index}>
+                          <FormGroup style={{ position: "relative" }}>
+                            <Input
+                              type="text"
+                              name={`options[${index}].option_text`}
+                              placeholder={`Option ${index + 1}`}
+                              value={option.option_text}
+                              readOnly
+                              style={{ paddingRight: "30px" }}
+                            />
+                            <Input
+                              type="radio"
+                              name="correct_ans"
+                              onChange={handleChange}
+                              value={option.option_text}
+                              className="radio-inside-input"
                               style={{
                                 position: "absolute",
-                                top: "5px",
-                                right: "-15px",
-                                cursor: "pointer",
+                                right: "8px",
+                                top: "50%",
+                                transform: "translateY(-70%)",
                               }}
                             />
-                          )}
-                        </FormGroup>
-                      </Col>
-                    ))}
-                  </Row>
-                  <div
-                    className="btn-primary btn"
-                    onClick={() => {
-                      setFieldValue(
-                        "number_of_options",
-                        values.number_of_options + 1
-                      );
-                      setFieldValue("options", [
-                        ...values.options,
-                        { option_text: "" },
-                      ]);
-                    }}
-                  >
-                    Add Option
-                  </div>
-                </>
-              )}
-
-              {values.question_type === "True Or False" && (
-                <Row>
-                  {values.options.map((option, index) => (
-                    <Col sm={6} key={index}>
-                      <FormGroup style={{ position: "relative" }}>
-                        <Input
-                          type="text"
-                          name={`options[${index}].option_text`}
-                          placeholder={`Option ${index + 1}`}
-                          value={option.option_text}
-                          readOnly
-                          style={{ paddingRight: "30px" }}
-                        />
-                        <Input
-                          type="radio"
-                          name="correct_ans"
-                          onChange={handleChange}
-                          value={option.option_text}
-                          className="radio-inside-input"
-                          style={{
-                            position: "absolute",
-                            right: "8px",
-                            top: "50%",
-                            transform: "translateY(-70%)",
-                          }}
-                        />
-                      </FormGroup>
-                    </Col>
-                  ))}
-                </Row>
-              )}
+                          </FormGroup>
+                        </Col>
+                      ))}
+                    </Row>
+                  )}
             </Form>
           )}
         </Formik>
