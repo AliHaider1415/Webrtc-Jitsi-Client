@@ -29,7 +29,6 @@ export default function Question({
   addQuestion,
   removeQuestion,
 }) {
-  let qt;
   return (
     <Card className="mb-4">
       <CardBody>
@@ -43,14 +42,17 @@ export default function Question({
           </div>
         </div>
         <Formik
-          initialValues={{
-            question_desc: "",
-            question_type: "MCQ",
-            question_point: "",
-            number_of_options: 2,
-            correct_ans: "",
-            options: [{ option_text: "" }, { option_text: "" }],
-          }}
+          initialValues={
+            question || {
+              question_desc: "",
+              question_type: "MCQ",
+              question_point: "",
+              number_of_options: 2,
+              correct_ans: "",
+              options: [{ option_text: "" }, { option_text: "" }],
+            }
+          }
+          enableReinitialize
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
             console.log(values);
@@ -65,7 +67,7 @@ export default function Question({
             handleBlur,
             handleSubmit,
             setFieldValue,
-            isValid,
+            enableReinitialize,
           }) => (
             <Form onBlur={handleSubmit}>
               <FormGroup className="mt-2">
