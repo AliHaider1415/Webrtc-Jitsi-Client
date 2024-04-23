@@ -23,19 +23,15 @@ export default function Question({
   return (
     <Card className="mb-4 roboto-thin" style={styles.input}>
       <CardBody>
-        <Row className="justify-content-center d-flex ">
-          <Col>
-            <CardHeader className="">Question {index + 1}</CardHeader>
-          </Col>
-          <Col>
-            <Button
-              className="btn-danger btn ml-3"
-              onClick={() => removeQuestion(index)}
-            >
-              Remove Question
-            </Button>
-          </Col>
-        </Row>
+        <>
+          <CardHeader className="">Question {index + 1}</CardHeader>
+          <Button
+            className="btn-danger btn  mt-2"
+            onClick={() => removeQuestion(index)}
+          >
+            Remove Question
+          </Button>
+        </>
         <Formik
           initialValues={
             question || {
@@ -64,13 +60,12 @@ export default function Question({
             setFieldValue,
           }) => (
             <Form onBlur={handleSubmit}>
-              <Row>
+              <Row className="mt-4">
                 <Col>
                   <Label style={styles.descriptionColor}>
                     Question Description
                   </Label>
                   <Input
-                    enableReinitialize
                     type="textarea"
                     name="question_desc"
                     placeholder="Write your question here"
@@ -92,7 +87,7 @@ export default function Question({
                   )}
                 </Col>
               </Row>
-              <Row>
+              <Row className="mt-1">
                 <Col>
                   <Label style={styles.descriptionColor}>Marks </Label>
                   <Input
@@ -169,9 +164,7 @@ export default function Question({
                         <Label style={styles.descriptionColor}>Options</Label>
                         {question.options.map((option, idx) => (
                           <Col sm={6} key={idx}>
-                            <FormGroup
-                              style={{ position: "relative", height: "50px" }}
-                            >
+                            <FormGroup>
                               <div>
                                 <Input
                                   type="text"
@@ -191,6 +184,7 @@ export default function Question({
                                       : styles.input
                                   }
                                 />
+
                                 <Input
                                   type="radio"
                                   name="correct_ans"
@@ -205,7 +199,14 @@ export default function Question({
                                     ...(errors.correct_ans ? styles.error : {}),
                                   }}
                                 />
+                                {errors.options[idx] &&
+                                  touched.options[idx] && (
+                                    <div style={styles.errorMessage}>
+                                      {errors.options[idx]}
+                                    </div>
+                                  )}
                               </div>
+                              <Col></Col>
                               {question.number_of_options > 2 && (
                                 <DeleteIcon
                                   onClick={() => {
@@ -254,7 +255,7 @@ export default function Question({
                         <Label style={styles.descriptionColor}>Options</Label>
 
                         {values.options.map((option, idx) => (
-                          <Col md={6} key={idx}>
+                          <Col key={idx} md={6}>
                             <FormGroup
                               style={{
                                 position: "relative",
@@ -280,6 +281,7 @@ export default function Question({
                                       : styles.input
                                   }
                                 />
+
                                 <Input
                                   type="radio"
                                   name="correct_ans"
@@ -295,15 +297,11 @@ export default function Question({
                                   }}
                                 />
                               </div>
+
                               {values.number_of_options > 2 && (
-                                <div
-                                  style={{
-                                    position: "absolute",
-                                    top: "15%",
-                                    right: "-20px",
-                                  }}
-                                >
-                                  <DeleteIcon
+                                <div>
+                                  <Button
+                                    className="btn-danger btn"
                                     onClick={() => {
                                       const updatedOptions =
                                         values.options.filter(
@@ -316,13 +314,16 @@ export default function Question({
                                       );
                                     }}
                                     style={{ cursor: "pointer" }}
-                                  />
+                                  >
+                                    Remove Option
+                                  </Button>
                                 </div>
                               )}
                             </FormGroup>
                           </Col>
                         ))}
                       </Row>
+
                       <Button
                         style={styles.secondaryButton}
                         onClick={() => {

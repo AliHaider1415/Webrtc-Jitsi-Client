@@ -70,7 +70,6 @@ export default function CreateAssessmentForm() {
         handleChange,
         handleBlur,
         handleSubmit,
-        setFieldValue,
       }) => (
         <Container className="mt-5">
           <Card style={styles.assessmentModuleBackground}>
@@ -166,7 +165,7 @@ export default function CreateAssessmentForm() {
 
                   {questionsArray.length > 0 && (
                     <Button
-                      className="mx-3 mt-2"
+                      className="mx-1 mt-2"
                       onClick={handleSubmit}
                       style={styles.primaryButton}
                     >
