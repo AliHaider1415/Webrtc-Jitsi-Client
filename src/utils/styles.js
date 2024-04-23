@@ -13,6 +13,21 @@ const styles = {
   secondaryButton: {
     backgroundColor: "#FDC800",
   },
+
+  input: {
+    border: "1px solid #3E6A9F",
+    borderRadius: "5px",
+    marginBottom: "10px",
+  },
+  select: {
+    border: "1px solid #3E6A9F",
+    borderRadius: "5px",
+    marginBottom: "10px",
+    width: "100%",
+  },
+  descriptionColor: {
+    color: "#3E6A9F",
+  },
 };
 
 export default styles;

@@ -8,12 +8,12 @@ import {
   Row,
   Col,
   Button,
+  Label,
 } from "reactstrap";
 import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "../../utils/styles";
-
 export default function Question({
   index,
   question,
@@ -21,17 +21,21 @@ export default function Question({
   removeQuestion,
 }) {
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 roboto-thin" style={styles.input}>
       <CardBody>
-        <div className="d-flex justify-content-between">
-          <CardHeader className="flex-fill">Question {index + 1}</CardHeader>
-          <div
-            className="btn-danger btn ml-3"
-            onClick={() => removeQuestion(index)}
-          >
-            Remove Question
-          </div>
-        </div>
+        <Row className="justify-content-center d-flex ">
+          <Col>
+            <CardHeader className="">Question {index + 1}</CardHeader>
+          </Col>
+          <Col>
+            <Button
+              className="btn-danger btn ml-3"
+              onClick={() => removeQuestion(index)}
+            >
+              Remove Question
+            </Button>
+          </Col>
+        </Row>
         <Formik
           initialValues={
             question || {
@@ -58,92 +62,111 @@ export default function Question({
             handleBlur,
             handleSubmit,
             setFieldValue,
-            enableReinitialize,
           }) => (
             <Form onBlur={handleSubmit}>
-              <FormGroup className="mt-2">
-                <Input
-                  type="textarea"
-                  name="question_desc"
-                  placeholder="Write your question here"
-                  value={
-                    question ? question.question_desc : values.question_desc
-                  }
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  style={
-                    errors.question_desc && touched.question_desc
-                      ? styles.error
-                      : {}
-                  }
-                />
-                {errors.question_desc && touched.question_desc && (
-                  <div style={styles.errorMessage}>{errors.question_desc}</div>
-                )}
-              </FormGroup>
-              <FormGroup>
-                <Input
-                  type="number"
-                  name="question_point"
-                  placeholder="Marks of Question"
-                  value={
-                    question ? question.question_point : values.question_point
-                  }
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  style={
-                    errors.question_point && touched.question_point
-                      ? styles.error
-                      : {}
-                  }
-                />
-                {errors.question_point && touched.question_point && (
-                  <div style={styles.errorMessage}>{errors.question_point}</div>
-                )}
-              </FormGroup>
-              <Input
-                placeholder="Select Type"
-                type="select"
-                name="question_type"
-                className="mb-3"
-                onChange={(e) => {
-                  handleChange(e);
-                  if (e.target.value === "MCQ") {
-                    handleChange({
-                      target: { name: "number_of_options", value: 2 },
-                    });
-                    setFieldValue("options", [
-                      { option_text: "" },
-                      { option_text: "" },
-                    ]);
-                    setFieldValue("correct_ans", "");
-                  } else if (e.target.value === "True Or False") {
-                    handleChange({
-                      target: { name: "number_of_options", value: 2 },
-                    });
-                    setFieldValue("options", [
-                      { option_text: "True" },
-                      { option_text: "False" },
-                    ]);
-                  } else {
-                    handleChange({
-                      target: { name: "number_of_options", value: 0 },
-                    });
-                    setFieldValue("options", []);
-                    setFieldValue("correct_ans", "non-specified");
-                  }
-                }}
-                value={question ? question.question_type : values.question_type}
-              >
-                <option value="MCQ">Multiple Choice</option>
-                <option value="Short">Short Answer</option>
-                <option value="True Or False">True/False</option>
-              </Input>
+              <Row>
+                <Col>
+                  <Label style={styles.descriptionColor}>
+                    Question Description
+                  </Label>
+                  <Input
+                    enableReinitialize
+                    type="textarea"
+                    name="question_desc"
+                    placeholder="Write your question here"
+                    value={
+                      question ? question.question_desc : values.question_desc
+                    }
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    style={
+                      errors.question_desc && touched.question_desc
+                        ? styles.error
+                        : styles.input
+                    }
+                  />
+                  {errors.question_desc && touched.question_desc && (
+                    <div style={styles.errorMessage}>
+                      {errors.question_desc}
+                    </div>
+                  )}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Label style={styles.descriptionColor}>Marks </Label>
+                  <Input
+                    type="number"
+                    name="question_point"
+                    placeholder="Marks of Question"
+                    value={
+                      question ? question.question_point : values.question_point
+                    }
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    style={
+                      errors.question_point && touched.question_point
+                        ? styles.error
+                        : styles.input
+                    }
+                  />
+                  {errors.question_point && touched.question_point && (
+                    <div style={styles.errorMessage}>
+                      {errors.question_point}
+                    </div>
+                  )}
+                </Col>
+                <Col>
+                  <Label style={styles.descriptionColor}>Question Type</Label>
+                  <Input
+                    placeholder="Select Type"
+                    type="select"
+                    name="question_type"
+                    style={styles.input}
+                    className="mb-3"
+                    onChange={(e) => {
+                      handleChange(e);
+                      if (e.target.value === "MCQ") {
+                        handleChange({
+                          target: { name: "number_of_options", value: 2 },
+                        });
+                        setFieldValue("options", [
+                          { option_text: "" },
+                          { option_text: "" },
+                        ]);
+                        setFieldValue("correct_ans", "");
+                      } else if (e.target.value === "True Or False") {
+                        handleChange({
+                          target: { name: "number_of_options", value: 2 },
+                        });
+                        setFieldValue("options", [
+                          { option_text: "True" },
+                          { option_text: "False" },
+                        ]);
+                      } else {
+                        handleChange({
+                          target: { name: "number_of_options", value: 0 },
+                        });
+                        setFieldValue("options", []);
+                        setFieldValue("correct_ans", "non-specified");
+                      }
+                    }}
+                    value={
+                      question ? question.question_type : values.question_type
+                    }
+                  >
+                    <option value="MCQ">Multiple Choice</option>
+                    <option value="Short">Short Answer</option>
+                    <option value="True Or False">True/False</option>
+                  </Input>
+                </Col>
+              </Row>
 
               {question
                 ? question.question_type === "MCQ" && (
                     <>
                       <Row>
+                        <Label style={styles.descriptionColor}>Options</Label>
                         {question.options.map((option, idx) => (
                           <Col sm={6} key={idx}>
                             <FormGroup
@@ -165,7 +188,7 @@ export default function Question({
                                     touched.options[idx] &&
                                     touched.options[idx].option_text
                                       ? styles.error
-                                      : {}
+                                      : styles.input
                                   }
                                 />
                                 <Input
@@ -228,6 +251,8 @@ export default function Question({
                 : values.question_type === "MCQ" && (
                     <>
                       <Row>
+                        <Label style={styles.descriptionColor}>Options</Label>
+
                         {values.options.map((option, idx) => (
                           <Col md={6} key={idx}>
                             <FormGroup
@@ -252,7 +277,7 @@ export default function Question({
                                     touched.options[idx] &&
                                     touched.options[idx].option_text
                                       ? styles.error
-                                      : {}
+                                      : styles.input
                                   }
                                 />
                                 <Input
