@@ -7,21 +7,12 @@ import {
   Card,
   Row,
   Col,
+  Button,
 } from "reactstrap";
 import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import DeleteIcon from "@mui/icons-material/Delete";
-
-const styles = {
-  error: {
-    borderColor: "red",
-  },
-  errorMessage: {
-    color: "red",
-    fontSize: "0.8em",
-    marginTop: "0.2em",
-  },
-};
+import styles from "../../utils/styles";
 
 export default function Question({
   index,
@@ -114,6 +105,7 @@ export default function Question({
                 placeholder="Select Type"
                 type="select"
                 name="question_type"
+                className="mb-3"
                 onChange={(e) => {
                   handleChange(e);
                   if (e.target.value === "MCQ") {
@@ -153,7 +145,7 @@ export default function Question({
                     <>
                       <Row>
                         {question.options.map((option, idx) => (
-                          <Col sm={12} key={idx}>
+                          <Col sm={6} key={idx}>
                             <FormGroup
                               style={{ position: "relative", height: "50px" }}
                             >
@@ -216,8 +208,8 @@ export default function Question({
                           </Col>
                         ))}
                       </Row>
-                      <div
-                        className="btn-primary btn"
+                      <Button
+                        style={styles.secondaryButton}
                         onClick={() => {
                           setFieldValue(
                             "number_of_options",
@@ -230,16 +222,19 @@ export default function Question({
                         }}
                       >
                         Add Option
-                      </div>
+                      </Button>
                     </>
                   )
                 : values.question_type === "MCQ" && (
                     <>
                       <Row>
                         {values.options.map((option, idx) => (
-                          <Col sm={12} key={idx}>
+                          <Col md={6} key={idx}>
                             <FormGroup
-                              style={{ position: "relative", height: "50px" }}
+                              style={{
+                                position: "relative",
+                                height: "50px",
+                              }}
                             >
                               <div>
                                 <Input
@@ -276,32 +271,35 @@ export default function Question({
                                 />
                               </div>
                               {values.number_of_options > 2 && (
-                                <DeleteIcon
-                                  onClick={() => {
-                                    const updatedOptions =
-                                      values.options.filter(
-                                        (_, i) => i !== idx
-                                      );
-                                    setFieldValue("options", updatedOptions);
-                                    setFieldValue(
-                                      "number_of_options",
-                                      updatedOptions.length
-                                    );
-                                  }}
+                                <div
                                   style={{
                                     position: "absolute",
-                                    top: "5px",
-                                    right: "-15px",
-                                    cursor: "pointer",
+                                    top: "15%",
+                                    right: "-20px",
                                   }}
-                                />
+                                >
+                                  <DeleteIcon
+                                    onClick={() => {
+                                      const updatedOptions =
+                                        values.options.filter(
+                                          (_, i) => i !== idx
+                                        );
+                                      setFieldValue("options", updatedOptions);
+                                      setFieldValue(
+                                        "number_of_options",
+                                        updatedOptions.length
+                                      );
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                </div>
                               )}
                             </FormGroup>
                           </Col>
                         ))}
                       </Row>
-                      <div
-                        className="btn-primary btn"
+                      <Button
+                        style={styles.secondaryButton}
                         onClick={() => {
                           setFieldValue(
                             "number_of_options",
@@ -314,7 +312,7 @@ export default function Question({
                         }}
                       >
                         Add Option
-                      </div>
+                      </Button>
                     </>
                   )}
 
@@ -353,7 +351,7 @@ export default function Question({
                 : values.question_type === "True Or False" && (
                     <Row>
                       {values.options.map((option, index) => (
-                        <Col sm={6} key={index}>
+                        <Col key={index}>
                           <FormGroup style={{ position: "relative" }}>
                             <Input
                               type="text"

@@ -12,17 +12,7 @@ import Question from "../../../components/company-assessments/Question";
 import { Formik, Form } from "formik";
 import { AssessmentSchema } from "../../../utils/Schemas";
 import { toast } from "react-toastify";
-
-const styles = {
-  error: {
-    borderColor: "red",
-  },
-  errorMessage: {
-    color: "red",
-    fontSize: "0.8em",
-    marginTop: "0.2em",
-  },
-};
+import styles from "../../../utils/styles";
 
 export default function CreateAssessmentForm() {
   let totalPoints = 0;
@@ -47,7 +37,7 @@ export default function CreateAssessmentForm() {
 
   const removeQuestion = (indexToRemove) => {
     const updatedQuestionsArray = [...questionsArray];
-    // totalPoints -= updatedQuestionsArray[indexToRemove].question_point;
+    totalPoints -= updatedQuestionsArray[indexToRemove].question_point;
     updatedQuestionsArray.splice(indexToRemove, 1);
     setQuestionsArray(updatedQuestionsArray);
   };
@@ -95,7 +85,9 @@ export default function CreateAssessmentForm() {
                   {errors.title && touched.title && (
                     <div style={styles.errorMessage}>{errors.title}</div>
                   )}
-                  <Label for="">Assessment Description</Label>
+                  <Label for="" className="mt-1">
+                    Assessment Description
+                  </Label>
                   <Input
                     id="exampleText"
                     name="description"
@@ -131,7 +123,7 @@ export default function CreateAssessmentForm() {
             </Col>
           </Row>
           <Button
-            color="primary"
+            style={styles.primaryButton}
             className=""
             onClick={() => {
               setQuestionsArray([...questionsArray, null]);
@@ -139,9 +131,14 @@ export default function CreateAssessmentForm() {
           >
             Add Question
           </Button>
-          <div className="btn-success btn mx-3" onClick={handleSubmit}>
+
+          <Button
+            className="mx-3"
+            onClick={handleSubmit}
+            style={styles.primaryButton}
+          >
             Submit Assessment
-          </div>
+          </Button>
         </Container>
       )}
     </Formik>
