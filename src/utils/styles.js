@@ -28,6 +28,12 @@ const styles = {
   descriptionColor: {
     color: "#3E6A9F",
   },
+  assessmentModuleBackground: {
+    backgroundColor: "#f5f0f1",
+    border: "1px solid #3E6A9F",
+    borderRadius: "5px",
+    marginBottom: "10px",
+  },
 };
 
 export default styles;

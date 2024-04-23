@@ -73,13 +73,18 @@ export default function CreateAssessmentForm() {
         setFieldValue,
       }) => (
         <Container className="mt-5">
-          <Card style={({ backgroundColor: "#f8f9fa" }, styles.input)}>
+          <Card style={styles.assessmentModuleBackground}>
             <CardBody>
               <Form>
                 <FormGroup>
                   <Row>
                     <Col>
-                      <h1 className="text-center mb-4">Assessment Creation</h1>
+                      <h1
+                        className="text-center mb-4 fw-bold"
+                        style={styles.descriptionColor}
+                      >
+                        Assessment Creation
+                      </h1>
                     </Col>
                   </Row>
                   <Row className="justify-content-center">
