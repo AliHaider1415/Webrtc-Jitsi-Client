@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
 
 export default function CreateAssessmentForm() {
-  let totalPoints = 0;
+  const [totalPoints, setTotalPoints] = useState(0);
   const [questionsArray, setQuestionsArray] = useState([]);
   const handleCreateAssessment = (values) => {
     if (questionsArray.length === 0) {
@@ -26,7 +26,8 @@ export default function CreateAssessmentForm() {
 
   const addQuestion = (index, question) => {
     const updatedQuestionsArray = [...questionsArray];
-    totalPoints += question.question_point;
+    console.log(question.question_point);
+    setTotalPoints((prev) => prev + question.question_point);
     updatedQuestionsArray[index] = question;
     setQuestionsArray(updatedQuestionsArray);
   };
@@ -37,7 +38,13 @@ export default function CreateAssessmentForm() {
 
   const removeQuestion = (indexToRemove) => {
     const updatedQuestionsArray = [...questionsArray];
-    totalPoints -= updatedQuestionsArray[indexToRemove].question_point;
+    const removedQuestion = updatedQuestionsArray[indexToRemove];
+    console.log(removedQuestion);
+
+    if (removedQuestion && removedQuestion.question_point) {
+      setTotalPoints((prev) => prev - removedQuestion.question_point);
+    }
+
     updatedQuestionsArray.splice(indexToRemove, 1);
     setQuestionsArray(updatedQuestionsArray);
   };
