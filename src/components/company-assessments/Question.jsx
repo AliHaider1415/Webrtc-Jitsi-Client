@@ -12,8 +12,8 @@ import {
 } from "reactstrap";
 import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
-import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "../../utils/styles";
+import BackspaceIcon from "@mui/icons-material/Backspace";
 export default function Question({
   index,
   question,
@@ -24,7 +24,7 @@ export default function Question({
     <Card className="mb-4 roboto-thin" style={styles.input}>
       <CardBody>
         <>
-          <CardHeader className="">Question {index + 1}</CardHeader>
+          <CardHeader>Question {index + 1}</CardHeader>
           <Button
             className="btn-danger btn  mt-2"
             onClick={() => removeQuestion(index)}
@@ -160,78 +160,80 @@ export default function Question({
               {question
                 ? question.question_type === "MCQ" && (
                     <>
-                      <Row>
+                      <Row className="justify-content-center d-flex">
                         <Label style={styles.descriptionColor}>Options</Label>
-                        {question.options.map((option, idx) => (
-                          <Col sm={6} key={idx}>
-                            <FormGroup>
-                              <div>
-                                <Input
-                                  type="text"
-                                  name={`options[${idx}].option_text`}
-                                  placeholder={`Option ${idx + 1}`}
-                                  value={option.option_text}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  style={
-                                    errors.options &&
-                                    errors.options[idx] &&
-                                    errors.options[idx].option_text &&
-                                    touched.options &&
-                                    touched.options[idx] &&
-                                    touched.options[idx].option_text
-                                      ? styles.error
-                                      : styles.input
-                                  }
-                                />
 
-                                <Input
-                                  type="radio"
-                                  name="correct_ans"
-                                  onChange={handleChange}
-                                  value={option.option_text}
-                                  className="radio-inside-input"
-                                  style={{
-                                    position: "absolute",
-                                    right: "8px",
-                                    top: "50%",
-                                    transform: "translateY(-100%)",
-                                    ...(errors.correct_ans ? styles.error : {}),
-                                  }}
-                                />
-                                {errors.options[idx] &&
-                                  touched.options[idx] && (
-                                    <div style={styles.errorMessage}>
-                                      {errors.options[idx]}
-                                    </div>
-                                  )}
-                              </div>
-                              <Col></Col>
-                              {question.number_of_options > 2 && (
-                                <DeleteIcon
-                                  onClick={() => {
-                                    const updatedOptions =
-                                      question.options.filter(
-                                        (_, i) => i !== idx
-                                      );
-                                    setFieldValue("options", updatedOptions);
-                                    setFieldValue(
-                                      "number_of_options",
-                                      updatedOptions.length
-                                    );
-                                  }}
-                                  style={{
-                                    position: "absolute",
-                                    top: "5px",
-                                    right: "-15px",
-                                    cursor: "pointer",
-                                  }}
-                                />
-                              )}
-                            </FormGroup>
-                          </Col>
+                        {question.options.map((option, idx) => (
+                          <FormGroup
+                            style={{
+                              position: "relative",
+                              height: "50px",
+                            }}
+                          >
+                            <Row>
+                              {" "}
+                              <Col xs={10} sm={10} md={11}>
+                                <div className="position-relative d-flex align-items-center">
+                                  <Input
+                                    type="text"
+                                    name={`options[${idx}].option_text`}
+                                    placeholder={`Option ${idx + 1}`}
+                                    value={option.option_text}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    style={
+                                      errors.options &&
+                                      errors.options[idx] &&
+                                      errors.options[idx].option_text &&
+                                      touched.options &&
+                                      touched.options[idx] &&
+                                      touched.options[idx].option_text
+                                        ? styles.error
+                                        : styles.input
+                                    }
+                                  />
+                                  <Input
+                                    type="radio"
+                                    name="correct_ans"
+                                    onChange={handleChange}
+                                    value={option.option_text}
+                                    className="radio-inside-input position-absolute"
+                                    style={{
+                                      right: "5px",
+                                      top: "30%",
+                                      transform: "translateY(-50%)",
+                                    }}
+                                  />
+                                </div>
+                              </Col>
+                              <Col xs={2} sm={2} md={1}>
+                                {question.number_of_options > 2 && (
+                                  <div>
+                                    <BackspaceIcon
+                                      onClick={() => {
+                                        const updatedOptions =
+                                          question.options.filter(
+                                            (_, i) => i !== idx
+                                          );
+                                        setFieldValue(
+                                          "options",
+                                          updatedOptions
+                                        );
+                                        setFieldValue(
+                                          "number_of_options",
+                                          updatedOptions.length
+                                        );
+                                      }}
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </div>
+                                )}
+                              </Col>
+                            </Row>
+                          </FormGroup>
                         ))}
                       </Row>
+
                       <Button
                         style={styles.secondaryButton}
                         onClick={() => {
@@ -251,76 +253,77 @@ export default function Question({
                   )
                 : values.question_type === "MCQ" && (
                     <>
-                      <Row>
+                      <Row className="justify-content-center d-flex">
                         <Label style={styles.descriptionColor}>Options</Label>
 
                         {values.options.map((option, idx) => (
-                          <Col key={idx} md={6}>
-                            <FormGroup
-                              style={{
-                                position: "relative",
-                                height: "50px",
-                              }}
-                            >
-                              <div>
-                                <Input
-                                  type="text"
-                                  name={`options[${idx}].option_text`}
-                                  placeholder={`Option ${idx + 1}`}
-                                  value={option.option_text}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  style={
-                                    errors.options &&
-                                    errors.options[idx] &&
-                                    errors.options[idx].option_text &&
-                                    touched.options &&
-                                    touched.options[idx] &&
-                                    touched.options[idx].option_text
-                                      ? styles.error
-                                      : styles.input
-                                  }
-                                />
-
-                                <Input
-                                  type="radio"
-                                  name="correct_ans"
-                                  onChange={handleChange}
-                                  value={option.option_text}
-                                  className="radio-inside-input"
-                                  style={{
-                                    position: "absolute",
-                                    right: "8px",
-                                    top: "50%",
-                                    transform: "translateY(-100%)",
-                                    ...(errors.correct_ans ? styles.error : {}),
-                                  }}
-                                />
-                              </div>
-
-                              {values.number_of_options > 2 && (
-                                <div>
-                                  <Button
-                                    className="btn-danger btn"
-                                    onClick={() => {
-                                      const updatedOptions =
-                                        values.options.filter(
-                                          (_, i) => i !== idx
-                                        );
-                                      setFieldValue("options", updatedOptions);
-                                      setFieldValue(
-                                        "number_of_options",
-                                        updatedOptions.length
-                                      );
+                          <FormGroup
+                            style={{
+                              position: "relative",
+                              height: "50px",
+                            }}
+                          >
+                            <Row>
+                              {" "}
+                              <Col xs={10} sm={10} md={11}>
+                                <div className="position-relative d-flex align-items-center">
+                                  <Input
+                                    type="text"
+                                    name={`options[${idx}].option_text`}
+                                    placeholder={`Option ${idx + 1}`}
+                                    value={option.option_text}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    style={
+                                      errors.options &&
+                                      errors.options[idx] &&
+                                      errors.options[idx].option_text &&
+                                      touched.options &&
+                                      touched.options[idx] &&
+                                      touched.options[idx].option_text
+                                        ? styles.error
+                                        : styles.input
+                                    }
+                                  />
+                                  <Input
+                                    type="radio"
+                                    name="correct_ans"
+                                    onChange={handleChange}
+                                    value={option.option_text}
+                                    className="radio-inside-input position-absolute"
+                                    style={{
+                                      right: "5px",
+                                      top: "30%",
+                                      transform: "translateY(-50%)",
                                     }}
-                                    style={{ cursor: "pointer" }}
-                                  >
-                                    Remove Option
-                                  </Button>
+                                  />
                                 </div>
-                              )}
-                            </FormGroup>
-                          </Col>
+                              </Col>
+                              <Col xs={2} sm={2} md={1}>
+                                {values.number_of_options > 2 && (
+                                  <div>
+                                    <BackspaceIcon
+                                      onClick={() => {
+                                        const updatedOptions =
+                                          values.options.filter(
+                                            (_, i) => i !== idx
+                                          );
+                                        setFieldValue(
+                                          "options",
+                                          updatedOptions
+                                        );
+                                        setFieldValue(
+                                          "number_of_options",
+                                          updatedOptions.length
+                                        );
+                                      }}
+                                      style={{ cursor: "pointer" }}
+                                    />
+                                  </div>
+                                )}
+                              </Col>
+                            </Row>
+                          </FormGroup>
                         ))}
                       </Row>
 
