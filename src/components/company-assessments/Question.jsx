@@ -230,6 +230,18 @@ export default function Question({
                                 )}
                               </Col>
                             </Row>
+                            {errors.options
+                              ? errors.options &&
+                                errors.options[idx] &&
+                                errors.options[idx].option_text &&
+                                touched.options &&
+                                touched.options[idx] &&
+                                touched.options[idx].option_text && (
+                                  <div style={styles.errorMessage}>
+                                    {errors.options[idx].option_text}
+                                  </div>
+                                )
+                              : ""}
                           </FormGroup>
                         ))}
                       </Row>
@@ -323,6 +335,18 @@ export default function Question({
                                 )}
                               </Col>
                             </Row>
+                            {errors.options
+                              ? errors.options &&
+                                errors.options[idx] &&
+                                errors.options[idx].option_text &&
+                                touched.options &&
+                                touched.options[idx] &&
+                                touched.options[idx].option_text && (
+                                  <div style={styles.errorMessage}>
+                                    {errors.options[idx].option_text}
+                                  </div>
+                                )
+                              : ""}
                           </FormGroup>
                         ))}
                       </Row>

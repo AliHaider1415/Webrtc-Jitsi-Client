@@ -17,16 +17,25 @@ import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
 
 export default function CreateAssessmentForm() {
+  //total marks state
   const [totalPoints, setTotalPoints] = useState(0);
+  //question array
   const [questionsArray, setQuestionsArray] = useState([]);
+  useEffect(() => {
+    console.log(questionsArray);
+  }, [questionsArray]);
 
+  //handle create assessment
   const handleCreateAssessment = (values) => {
+    console.log(values.title, values.description, totalPoints, questionsArray);
     if (questionsArray.length === 0) {
       toast.error("Please add questions to the assessment");
+    } else if (questionsArray.some((question) => question === null)) {
+      toast.error("Please fill all the questions");
     }
-    console.log(values.title, values.description, totalPoints, questionsArray);
   };
 
+  //add question
   const addQuestion = (index, question) => {
     const updatedQuestionsArray = [...questionsArray];
     console.log(question.question_point);
@@ -35,10 +44,7 @@ export default function CreateAssessmentForm() {
     setQuestionsArray(updatedQuestionsArray);
   };
 
-  useEffect(() => {
-    console.log(questionsArray);
-  }, [questionsArray]);
-
+  //remove question
   const removeQuestion = (indexToRemove) => {
     const updatedQuestionsArray = [...questionsArray];
     const removedQuestion = updatedQuestionsArray[indexToRemove];
@@ -47,7 +53,6 @@ export default function CreateAssessmentForm() {
     if (removedQuestion && removedQuestion.question_point) {
       setTotalPoints((prev) => prev - removedQuestion.question_point);
     }
-
     updatedQuestionsArray.splice(indexToRemove, 1);
     setQuestionsArray(updatedQuestionsArray);
   };
@@ -146,6 +151,8 @@ export default function CreateAssessmentForm() {
                         <Question
                           key={index}
                           index={index}
+                          handleChange={handleChange}
+                          handleBlur={handleBlur}
                           question={question}
                           addQuestion={addQuestion}
                           removeQuestion={() => removeQuestion(index)}
