@@ -34,6 +34,11 @@ const styles = {
     borderRadius: "5px",
     marginBottom: "10px",
   },
+
+  CardStyles: {
+    width: "18rem",
+    border: "2px solid #3E6A9F",
+  },
 };
 
 export default styles;

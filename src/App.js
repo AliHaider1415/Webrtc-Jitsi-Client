@@ -9,11 +9,12 @@ import AllAssessmentCompany from "./pages/company-assessment/all-assessments/All
 import SingleAssessmentCompany from "./pages/company-assessment/Single-Assessment/SingleAssessmentCompany";
 import CreateAssessment from "./pages/company-assessment/create-assessment/CreateAssessment";
 import AllAssessmentJobSeeker from "./pages/job-seeker-assesment/all-assessments/AllAssessmentJobSeeker";
-import SingleAssessmentJobSeeker from "./pages/job-seeker-assesment/Single-Assessment/SingleAssessmentJobSeeker";
+import SingleAssessmentJobSeeker from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
 import Layout from "./layout/Layout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
 function App() {
   const user = userAuthStore((state) => state.user);
 
@@ -26,20 +27,33 @@ function App() {
           <Layout>
             <Routes>
               {/* ---------------------------------------- */}
-
               {/* Authentication Routes */}
               <Route path="/login" element={<Login />} />
-              <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/sign-up" element={<SignUp />} />4
+              {/* ---For temmporary all paths i set to public------------------------------------- */}
               <Route
                 path="/company/create-assessment"
                 element={<CreateAssessment />}
               />
-
+              <Route
+                path="/candidate/all-assessments"
+                element={<AllAssessmentJobSeeker />}
+              />
+              <Route
+                path="/candidate/attempt-assessment/:id"
+                element={<AttemptAssessmentPage />}
+              />
+              {/* <Route
+                path="/candidate/all-assessments/:id"
+                element={
+                  <JobSeekerRoute user={user}>
+                    <SingleAssessmentJobSeeker />
+                  </JobSeekerRoute>
+                }
+              /> */}
               {/* ---------------------------------------- */}
-
               {/* Public Available Routes */}
               <Route path="/" element={<LandingPage />} />
-
               {/* ---------------------------------------- */}
               {/* CompanyRoutes */}
               {/* Compnay will get its all assesments title and details in this page but not open a particular assesment */}
@@ -69,19 +83,17 @@ function App() {
                   </CompanyRoute>
                 }
               /> */}
-
               {/* ---------------------------------------- */}
               {/* JobSeeker Routes */}
               {/* Candidate will get all assesments from here  */}
-              <Route
+              {/* <Route
                 path="/candidate/all-assessments"
                 element={
                   <JobSeekerRoute user={user}>
                     <AllAssessmentJobSeeker />
                   </JobSeekerRoute>
                 }
-              />
-
+              /> */}
               {/* Candidate will open a particular assesment to view  and attempt */}
               <Route
                 path="/candidate/all-assessments/:id"
