@@ -18,7 +18,7 @@ export default function AssessmentInfoBox(props) {
           className="fw-bold text-center"
           style={styles.secondaryButton}
         >
-          Total Marks: {assessment.marks}
+          Total Marks: {assessment.total_points}
         </CardText>
         <div className="text-center">
           <Link to={`/candidate/attempt-assessment/${assessment.id}`}>
