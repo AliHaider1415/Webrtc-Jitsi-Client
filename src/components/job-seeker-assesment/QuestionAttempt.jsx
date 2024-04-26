@@ -20,7 +20,10 @@ export default function QuestionAttempt(props) {
     <Card className="mb-4 roboto-thin" style={styles.input}>
       <CardBody>
         <>
-          <CardHeader>Question {index + 1}</CardHeader>
+          <CardHeader className="fw-bold">Question {index + 1}</CardHeader>
+          <CardHeader className="mt-2 fw-bold">
+            Max Marks:{question.question_point}
+          </CardHeader>
         </>
         <Formik
           initialValues={{
@@ -35,9 +38,10 @@ export default function QuestionAttempt(props) {
             <Form onBlur={handleSubmit}>
               <Row className="mt-4">
                 <Col>
-                  <Label style={styles.descriptionColor}>
+                  <Label style={styles.descriptionColor} className="fw-bold">
                     Question Description
                   </Label>
+
                   <Input
                     readOnly
                     type="textarea"
@@ -50,8 +54,10 @@ export default function QuestionAttempt(props) {
               {(question.question_type === "MCQ" ||
                 question.question_type === "True Or False") && (
                 <>
-                  <Row className="justify-content-center d-flex">
-                    <Label style={styles.descriptionColor}>Options</Label>
+                  <Row className="justify-content-center d-flex mt-1">
+                    <Label style={styles.descriptionColor} className="fw-bold">
+                      Choose the correct option
+                    </Label>
 
                     {question.options.map((option, idx) => (
                       <FormGroup
@@ -94,9 +100,11 @@ export default function QuestionAttempt(props) {
                 </>
               )}
               {question.question_type === "Short" && (
-                <Row className="mt-4">
+                <Row className="mt-1">
                   <Col>
-                    <Label style={styles.descriptionColor}>Answer</Label>
+                    <Label style={styles.descriptionColor} className="fw-bold">
+                      Answer
+                    </Label>
                     <Input
                       type="textarea"
                       name="correct_ans"

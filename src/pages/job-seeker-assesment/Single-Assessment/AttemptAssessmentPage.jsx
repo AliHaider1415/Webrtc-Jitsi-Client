@@ -6,19 +6,28 @@ import {
   Card,
   CardBody,
   Form,
+  Button,
   FormGroup,
   Row,
   Col,
 } from "reactstrap";
 import QuestionAttempt from "../../../components/job-seeker-assesment/QuestionAttempt";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 export default function AttemptAssessmentPage() {
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState([]);
 
+  const submitAssessment = () => {
+    toast.success("Assessment Submitted Successfully");
+    navigate("/candidate/all-assessments");
+    console.log(answers);
+  };
   const addAnswers = (answer, index) => {
     let updatedAnswers = [...answers];
     updatedAnswers[index] = answer;
     setAnswers(updatedAnswers);
-    console.log(answers);
   };
 
   const { id } = useParams();
@@ -97,6 +106,16 @@ export default function AttemptAssessmentPage() {
               </Row>
               <Row>
                 <Col>
+                  <h4
+                    className="text-center fw-bold"
+                    style={styles.secondaryButton}
+                  >
+                    Total Marks: {assessment.total_points}
+                  </h4>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                   {assessment.questions.map((question, index) => (
                     <QuestionAttempt
                       question={question}
@@ -105,6 +124,16 @@ export default function AttemptAssessmentPage() {
                       addAnswers={addAnswers}
                     />
                   ))}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Button
+                    style={styles.primaryButton}
+                    onClick={submitAssessment}
+                  >
+                    Submit Assessment
+                  </Button>
                 </Col>
               </Row>
             </FormGroup>
