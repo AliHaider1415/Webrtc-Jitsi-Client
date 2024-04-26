@@ -11,8 +11,10 @@ export default function AssessmentInfoBox(props) {
         <h5 style={{ marginBottom: "0" }}>{assessment.title}</h5>
       </CardHeader>
       <CardBody>
-        <CardText style={{ fontSize: "14px", color: "#6c757d" }}>
-          {assessment.description}
+        <CardText
+          style={{ fontSize: "14px", color: "#6c757d", height: "60px" }}
+        >
+          {assessment.description.substring(0, 100)}
         </CardText>
         <CardText
           className="fw-bold text-center"

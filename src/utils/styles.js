@@ -39,6 +39,21 @@ const styles = {
     width: "18rem",
     border: "2px solid #3E6A9F",
   },
+
+  secondaryColor: {
+    color: "#FDC800",
+  },
+
+  correctAns: {
+    border: "3px solid green",
+    borderRadius: "5px",
+    color: "green",
+  },
+  wrongAns: {
+    border: "3px solid red",
+    borderRadius: "5px",
+    color: "red",
+  },
 };
 
 export default styles;
