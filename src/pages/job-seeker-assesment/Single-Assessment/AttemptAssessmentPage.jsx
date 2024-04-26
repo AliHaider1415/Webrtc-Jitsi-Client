@@ -11,8 +11,10 @@ export default function AttemptAssessmentPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const submitAssessment = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
+    toast.success("Assessment Submitted Successfully");
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 2000);
     setIsSubmitted(true);
     console.log(answers);
   };
@@ -322,12 +324,6 @@ export default function AttemptAssessmentPage() {
     company: "ReactTech",
     obtained_points: 13,
   };
-
-  //  <AttemptAssessmentQuestions
-  //assessment={assessment}
-  //submitAssessment={submitAssessment}
-  //addAnswers={addAnswers}
-  ///>
 
   return isSubmitted ? (
     <ResultAssessmentQuestions result={result} />

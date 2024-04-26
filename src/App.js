@@ -15,9 +15,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
+import { FadeLoader } from "react-spinners";
+import loaderStore from "./store/loaderStore/loaderStore";
 function App() {
   const user = userAuthStore((state) => state.user);
-
+  const loading = loaderStore((state) => state.loader);
   return (
     <div className="App">
       {" "}
@@ -105,6 +107,15 @@ function App() {
               />
             </Routes>
           </Layout>
+          {
+            <FadeLoader
+              aria-label="Loading Spinner"
+              data-testid="loader"
+              loading={loading}
+              className="text-center"
+            />
+          }
+
           <ToastContainer />
         </BrowserRouter>
       </header>
