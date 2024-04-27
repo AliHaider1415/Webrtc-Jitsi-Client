@@ -10,6 +10,7 @@ import {
   Button,
   Label,
 } from "reactstrap";
+
 import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import styles from "../../utils/styles";
@@ -147,7 +148,7 @@ export default function Question({
                     value={values.question_type}
                   >
                     <option value="MCQ">Multiple Choice</option>
-                    <option value="Short">Short Answer</option>
+                    <option value="Text Based">Text Based</option>
                     <option value="True Or False">True/False</option>
                   </Input>
                 </Col>
