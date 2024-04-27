@@ -161,6 +161,7 @@ export default function EditAssessmentPage() {
   };
 
   const { id } = useParams();
+  let enableEdit = true;
 
   const [totalPoints, setTotalPoints] = useState(assessment.total_points);
   //question array
@@ -297,6 +298,7 @@ export default function EditAssessmentPage() {
                           index={index}
                           handleChange={handleChange}
                           handleBlur={handleBlur}
+                          enableEdit={enableEdit}
                           question={question}
                           addQuestion={addQuestion}
                           removeQuestion={() => removeQuestion(index)}

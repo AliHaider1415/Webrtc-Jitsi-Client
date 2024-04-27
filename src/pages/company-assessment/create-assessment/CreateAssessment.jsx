@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
 
 export default function CreateAssessmentForm() {
+  let enableEdit = false;
   //total marks state
   const [totalPoints, setTotalPoints] = useState(0);
   //question array
@@ -153,6 +154,7 @@ export default function CreateAssessmentForm() {
                           index={index}
                           handleChange={handleChange}
                           handleBlur={handleBlur}
+                          enableEdit={enableEdit}
                           question={question}
                           addQuestion={addQuestion}
                           removeQuestion={() => removeQuestion(index)}

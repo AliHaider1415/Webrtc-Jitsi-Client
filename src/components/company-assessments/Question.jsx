@@ -18,6 +18,7 @@ export default function Question({
   index,
   question,
   addQuestion,
+  enableEdit,
   removeQuestion,
 }) {
   return (
@@ -36,7 +37,7 @@ export default function Question({
           initialValues={{
             question_desc: question ? question.question_desc : "",
             question_type: question ? question.question_type : "MCQ",
-            question_point: question ? question.question_point : 0,
+            question_point: question ? question.question_point : 1,
             number_of_options: question ? question.number_of_options : 2,
             correct_ans: question ? question.answer_text : "",
             options: question
@@ -186,18 +187,36 @@ export default function Question({
                                     : styles.input
                                 }
                               />
-                              <Input
-                                type="radio"
-                                name="correct_ans"
-                                onChange={handleChange}
-                                value={option.option_text}
-                                className="radio-inside-input position-absolute"
-                                style={{
-                                  right: "5px",
-                                  top: "30%",
-                                  transform: "translateY(-50%)",
-                                }}
-                              />
+                              {enableEdit ? (
+                                <Input
+                                  type="radio"
+                                  name="correct_ans"
+                                  onChange={handleChange}
+                                  checked={
+                                    values.correct_ans === option.option_text
+                                  }
+                                  value={option.option_text}
+                                  className="radio-inside-input position-absolute"
+                                  style={{
+                                    right: "5px",
+                                    top: "30%",
+                                    transform: "translateY(-50%)",
+                                  }}
+                                />
+                              ) : (
+                                <Input
+                                  type="radio"
+                                  name="correct_ans"
+                                  onChange={handleChange}
+                                  value={option.option_text}
+                                  className="radio-inside-input position-absolute"
+                                  style={{
+                                    right: "5px",
+                                    top: "30%",
+                                    transform: "translateY(-50%)",
+                                  }}
+                                />
+                              )}
                             </div>
                           </Col>
                           <Col xs={2} sm={2} md={1}>
