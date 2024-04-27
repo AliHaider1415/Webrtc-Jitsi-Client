@@ -18,13 +18,11 @@ import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
 import { useQuery } from "@tanstack/react-query";
 import url from "../../../utils/api";
+import auth from "../../../utils/helper";
 
 export default function EditAssessmentPage() {
   const { id } = useParams();
   let enableEdit = true;
-
-  let i =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE0MjQwNTg2LCJpYXQiOjE3MTQyMzY5ODYsImp0aSI6IjRjNzUwY2JkMmY4MzRlMzc5MmQxM2RjYWJjMDMwYzQ0IiwidXNlcl9pZCI6N30.m9aXhRJESRcVa7NHx5cCDqgQgds49NcYwWaCauKzVnI";
 
   //fetching data
   const {
@@ -40,7 +38,7 @@ export default function EditAssessmentPage() {
         {
           method: "GET",
           headers: {
-            Authorization: `Bearer  ${i}`,
+            Authorization: `Bearer  ${auth}`,
           },
         }
       );
@@ -50,11 +48,7 @@ export default function EditAssessmentPage() {
       return response.json();
     },
   });
-  // if (isPending) return <div> Loading...</div>;
 
-  // if (error) return <div>An error has occurred: {error.message}</div>;
-
-  //handle create assessment
   const handleCreateAssessment = (values) => {
     console.log(values.title, values.description, totalPoints, questionsArray);
     if (questionsArray.length === 0) {
@@ -86,8 +80,6 @@ export default function EditAssessmentPage() {
   };
 
   const [totalPoints, setTotalPoints] = useState(0);
-
-  // question array
   const [questionsArray, setQuestionsArray] = useState([]);
 
   return (
@@ -112,9 +104,9 @@ export default function EditAssessmentPage() {
             handleSubmit,
           }) => (
             <Container className="mt-5">
+              {setTotalPoints(assessment[0].total_points)}
               {setQuestionsArray(assessment[0].questions)}
-              {console.log("tp", assessment[0].total_points)}
-
+              {console.log(assessment)}
               <Card style={styles.assessmentModuleBackground}>
                 <CardBody>
                   <Form>

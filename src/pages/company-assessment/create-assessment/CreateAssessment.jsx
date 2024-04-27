@@ -15,8 +15,29 @@ import { Formik, Form } from "formik";
 import { AssessmentSchema } from "../../../utils/Schemas";
 import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
+import auth from "../../../utils/helper";
+import url from "../../../utils/api";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateAssessmentForm() {
+  const navigate = useNavigate();
+  const createAssessment = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.post(
+        `${protocol}//${url}/assessment/create-assessment`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${auth}`,
+          },
+        }
+      );
+    },
+  });
+
   let enableEdit = false;
   //total marks state
   const [totalPoints, setTotalPoints] = useState(0);
@@ -27,13 +48,24 @@ export default function CreateAssessmentForm() {
   }, [questionsArray]);
 
   //handle create assessment
+
   const handleCreateAssessment = (values) => {
-    console.log(values.title, values.description, totalPoints, questionsArray);
     if (questionsArray.length === 0) {
       toast.error("Please add questions to the assessment");
+      return;
     } else if (questionsArray.some((question) => question === null)) {
       toast.error("Please fill all the questions");
+      return;
     }
+
+    const response = createAssessment.mutate({
+      assessment: {
+        title: values.title,
+        description: values.description,
+        total_points: totalPoints,
+      },
+      questions: questionsArray,
+    });
   };
 
   //add question
@@ -79,6 +111,13 @@ export default function CreateAssessmentForm() {
       }) => (
         <Container className="mt-5">
           <Card style={styles.assessmentModuleBackground}>
+            {createAssessment.isError &&
+              toast.error("An error occurred while creating the assessment")}
+            {createAssessment.isSuccess &&
+              toast.success("Your assessment has been created successfully")}
+            {createAssessment.isSuccess &&
+              navigate("/company/company-assessments")}
+            {createAssessment.isLoading && toast.info("Creating assessment")}
             <CardBody>
               <Form>
                 <FormGroup>
@@ -177,8 +216,13 @@ export default function CreateAssessmentForm() {
                       className="mx-1 mt-2"
                       onClick={handleSubmit}
                       style={styles.primaryButton}
+                      disabled={createAssessment.isPending}
                     >
-                      Submit Assessment
+                      {createAssessment.isPending ? (
+                        <>Submitting Assessmnent</>
+                      ) : (
+                        <>Submit Assessment</>
+                      )}
                     </Button>
                   )}
                 </FormGroup>

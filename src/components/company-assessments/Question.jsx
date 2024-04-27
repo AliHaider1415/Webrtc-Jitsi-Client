@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   FormGroup,
   Input,
@@ -40,7 +40,7 @@ export default function Question({
             question_type: question ? question.question_type : "MCQ",
             question_point: question ? question.question_point : 1,
             number_of_options: question ? question.number_of_options : 2,
-            correct_ans: question ? question.answer_text : "",
+            answer_text: question ? question.answer_text : "",
             options: question
               ? question.options
               : [{ option_text: "" }, { option_text: "" }],
@@ -48,8 +48,6 @@ export default function Question({
           enableReinitialize
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
-            console.log("sa");
-            console.log(values);
             addQuestion(index, values);
           }}
         >
@@ -128,7 +126,7 @@ export default function Question({
                           { option_text: "" },
                           { option_text: "" },
                         ]);
-                        setFieldValue("correct_ans", "");
+                        setFieldValue("answer_text", "");
                       } else if (e.target.value === "True Or False") {
                         handleChange({
                           target: { name: "number_of_options", value: 2 },
@@ -142,7 +140,7 @@ export default function Question({
                           target: { name: "number_of_options", value: 0 },
                         });
                         setFieldValue("options", []);
-                        setFieldValue("correct_ans", "non-specified");
+                        setFieldValue("answer_text", "non-specified");
                       }
                     }}
                     value={values.question_type}
@@ -191,10 +189,10 @@ export default function Question({
                               {enableEdit ? (
                                 <Input
                                   type="radio"
-                                  name="correct_ans"
+                                  name="answer_text"
                                   onChange={handleChange}
                                   checked={
-                                    values.correct_ans === option.option_text
+                                    values.answer_text === option.option_text
                                   }
                                   value={option.option_text}
                                   className="radio-inside-input position-absolute"
@@ -207,7 +205,7 @@ export default function Question({
                               ) : (
                                 <Input
                                   type="radio"
-                                  name="correct_ans"
+                                  name="answer_text"
                                   onChange={handleChange}
                                   value={option.option_text}
                                   className="radio-inside-input position-absolute"
@@ -288,20 +286,34 @@ export default function Question({
                           readOnly
                           style={{ paddingRight: "30px" }}
                         />
-                        <Input
-                          type="radio"
-                          name="correct_ans"
-                          onChange={handleChange}
-                          value={option.option_text}
-                          checked={values.correct_ans === option.option_text}
-                          className="radio-inside-input"
-                          style={{
-                            position: "absolute",
-                            right: "8px",
-                            top: "50%",
-                            transform: "translateY(-70%)",
-                          }}
-                        />
+                        {enableEdit ? (
+                          <Input
+                            type="radio"
+                            name="answer_text"
+                            onChange={handleChange}
+                            checked={values.answer_text === option.option_text}
+                            value={option.option_text}
+                            className="radio-inside-input position-absolute"
+                            style={{
+                              right: "5px",
+                              top: "30%",
+                              transform: "translateY(-50%)",
+                            }}
+                          />
+                        ) : (
+                          <Input
+                            type="radio"
+                            name="answer_text"
+                            onChange={handleChange}
+                            value={option.option_text}
+                            className="radio-inside-input position-absolute"
+                            style={{
+                              right: "5px",
+                              top: "30%",
+                              transform: "translateY(-50%)",
+                            }}
+                          />
+                        )}
                       </FormGroup>
                     </Col>
                   ))}

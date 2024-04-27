@@ -23,7 +23,7 @@ const OptionSchema = Yup.object().shape({
 const QuestionSchema = Yup.object().shape({
   question_desc: Yup.string().required("Question description is required"),
   question_type: Yup.string()
-    .oneOf(["MCQ", "Short", "True Or False"], "Invalid question type")
+    .oneOf(["MCQ", "Text Based", "True Or False"], "Invalid question type")
     .required("Question type is required"),
   question_point: Yup.number()
     .positive("Marks must be a positive number")
@@ -32,7 +32,7 @@ const QuestionSchema = Yup.object().shape({
     0,
     "Number of options should be non-negative"
   ),
-  correct_ans: Yup.string().required("Correct answer is required"),
+  answer_text: Yup.string().required("Correct answer is required"),
   options: Yup.array().of(OptionSchema),
 });
 

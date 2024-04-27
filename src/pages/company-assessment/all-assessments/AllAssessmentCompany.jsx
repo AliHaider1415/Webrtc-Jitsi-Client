@@ -5,11 +5,10 @@ import { Link } from "react-router-dom";
 import AssessmentInfoBox from "../../../components/company-assessments/AssessmentInfoBox";
 import { useQuery } from "@tanstack/react-query";
 import url from "../../../utils/api";
+import auth from "../../../utils/helper";
 
 export default function AllAssessmentCompany() {
   //token
-  let i =
-    "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE0MjQwNTg2LCJpYXQiOjE3MTQyMzY5ODYsImp0aSI6IjRjNzUwY2JkMmY4MzRlMzc5MmQxM2RjYWJjMDMwYzQ0IiwidXNlcl9pZCI6N30.m9aXhRJESRcVa7NHx5cCDqgQgds49NcYwWaCauKzVnI";
 
   //fetching data
   const {
@@ -25,7 +24,7 @@ export default function AllAssessmentCompany() {
         {
           method: "GET",
           headers: {
-            Authorization: `Bearer  ${i}`,
+            Authorization: `Bearer  ${auth}`,
           },
         }
       );
