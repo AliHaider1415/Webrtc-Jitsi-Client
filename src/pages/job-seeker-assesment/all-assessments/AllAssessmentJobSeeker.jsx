@@ -11,13 +11,11 @@ export default function AllAssessmentJobSeeker() {
         All My Assessments
       </h1>
       <Container className="text-center d-flex align-items-center">
-        <Row className="">
+        <Container className="d-flex justify-content-between flex-wrap  ">
           {assessments.map((assessment) => (
-            <Col key={assessment.id} md={3} sm={6} xs={12}>
-              <AssessmentInfoBox assessment={assessment} />
-            </Col>
+            <AssessmentInfoBox assessment={assessment} />
           ))}
-        </Row>
+        </Container>
       </Container>
     </div>
   );

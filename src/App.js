@@ -17,6 +17,7 @@ import "./App.css";
 import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
 import { FadeLoader } from "react-spinners";
 import loaderStore from "./store/loaderStore/loaderStore";
+import AssessmentEditPage from "./pages/company-assessment/all-assessments/AssessmentEditPage";
 function App() {
   const user = userAuthStore((state) => state.user);
   const loading = loaderStore((state) => state.loader);
@@ -45,7 +46,16 @@ function App() {
                 path="/candidate/attempt-assessment/:id"
                 element={<AttemptAssessmentPage />}
               />
+              <Route
+                path="/company/company-assessments"
+                element={<AllAssessmentCompany />}
+              />
+              <Route
+                path="/company/view-assessments/:id"
+                element={<AssessmentEditPage />}
+              />
               {/* <Route
+
                 path="/candidate/all-assessments/:id"
                 element={
                   <JobSeekerRoute user={user}>
@@ -59,14 +69,14 @@ function App() {
               {/* ---------------------------------------- */}
               {/* CompanyRoutes */}
               {/* Compnay will get its all assesments title and details in this page but not open a particular assesment */}
-              <Route
+              {/* <Route
                 path="/company/company-assessments"
                 element={
                   <CompanyRoute user={user}>
                     <AllAssessmentCompany />
                   </CompanyRoute>
                 }
-              />
+              /> */}
               {/* Compant will open a particular assesment to view  */}
               <Route
                 path="/company/company-assessments/:id"
