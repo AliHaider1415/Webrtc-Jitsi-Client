@@ -12,13 +12,14 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Formik, Form } from "formik";
 import { LoginSchema } from "../../../utils/Schemas";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
 import userAuthStore from "../../../store/userAuthStore/userAuthStore";
 import url from "../../../utils/api";
 import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 function Copyright(props) {
   return (
@@ -48,8 +49,7 @@ export default function Login() {
   const updateUser = userAuthStore((state) => state.setUser);
   const logout = userAuthStore((state) => state.logout);
 
-  const showToastMessage = (message) => {
-    console.log(message);
+  const LoggingUser = (message) => {
     if (message.error) {
       toast.error(message.error, {});
     } else {
@@ -65,34 +65,17 @@ export default function Login() {
     }
   };
 
-  const loginMutation = useMutation(async (values) => {
-    const protocol = window.location.protocol;
-    const response = await fetch(`${protocol}//${url}/accounts/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-      }),
-    });
-    const json = await response.json();
-    return json;
+  const loginMutation = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.post(`${protocol}//${url}/accounts/login`, values);
+    },
   });
-
-  const handleLogin = async (values) => {
-    try {
-      const data = await loginMutation.mutateAsync(values);
-      showToastMessage(data);
-    } catch (error) {
-      console.error("An error occurred:", error);
-      toast.error("An error occurred while logging in");
-    }
-  };
 
   return (
     <div>
+      {loginMutation.isSuccess && LoggingUser(loginMutation.data.data)}
+      {loginMutation.isError && toast.error("Error !!")}
       <Formik
         initialValues={{
           email: "",
@@ -100,7 +83,10 @@ export default function Login() {
         }}
         validationSchema={LoginSchema}
         onSubmit={(values) => {
-          handleLogin(values);
+          loginMutation.mutate({
+            email: values.email,
+            password: values.password,
+          });
         }}
       >
         {({
