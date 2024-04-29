@@ -15,15 +15,21 @@ import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import styles from "../../utils/styles";
 import BackspaceIcon from "@mui/icons-material/Backspace";
-export default function NewQuestion({ question, addQuestion }) {
+export default function NewQuestion({
+  question,
+  addQuestion,
+  index,
+  enableEdit,
+  removeNewQuestion,
+}) {
   return (
     <Card className="mb-4 roboto-thin" style={styles.input}>
       <CardBody>
         <>
-          <CardHeader>Question {index + 1}</CardHeader>
+          <CardHeader>Adding new Question</CardHeader>
           <Button
             className="btn-danger btn  mt-2"
-            onClick={() => removeQuestion(index)}
+            onClick={() => removeNewQuestion(index)}
           >
             Remove Question
           </Button>
@@ -54,7 +60,7 @@ export default function NewQuestion({ question, addQuestion }) {
             handleSubmit,
             setFieldValue,
           }) => (
-            <Form onBlur={handleSubmit}>
+            <Form>
               <Row className="mt-4">
                 <Col>
                   <Label style={styles.descriptionColor}>
@@ -313,6 +319,13 @@ export default function NewQuestion({ question, addQuestion }) {
                   ))}
                 </Row>
               )}
+              <Button
+                className="mx-2"
+                style={styles.primaryButton}
+                onClick={handleSubmit}
+              >
+                Save the Added Question
+              </Button>
             </Form>
           )}
         </Formik>

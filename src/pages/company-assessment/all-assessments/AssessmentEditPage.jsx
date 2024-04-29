@@ -20,29 +20,36 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import url from "../../../utils/api";
 import auth from "../../../utils/helper";
 import axios from "axios";
+import NewQuestion from "../../../components/company-assessments/NewQuestion";
 
 export default function EditAssessmentPage() {
+  const { id } = useParams();
+  //info edit
   const infoMutate = useMutation({
     mutationFn: (values) => {
       const protocol = window.location.protocol;
-      return axios.put(
-        `${protocol}//${url}/assessment/update-assessment/${values.id}/`,
-        {
-          assessment: {
-            title: values.title,
-            description: values.desc,
-            total_points: values.totalPoints,
-          },
-        },
+      console.log(values.question);
+      console.log(values.id);
+      // return axios.put(
+      //   `${protocol}//${url}/assessment/update-assessment/${values.id}/`,
+      //   {
+      //     assessment: {
+      //       title: values.title,
+      //       description: values.desc,
+      //       total_points: values.totalPoints,
+      //     },
+      //   },
 
-        {
-          headers: {
-            Authorization: `Bearer ${auth.auth}`,
-          },
-        }
-      );
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${auth.auth}`,
+      //     },
+      //   }
+      // );
     },
   });
+
+  //delete question
   const deleteQuestionMutate = useMutation({
     mutationFn: (id) => {
       const protocol = window.location.protocol;
@@ -56,7 +63,44 @@ export default function EditAssessmentPage() {
       );
     },
   });
+  //add new question
+  const addQuestionMutate = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.post(
+        `${protocol}//${url}/assessment/create-questions/${values.id}/`,
+        {
+          questions: [
+            {
+              question_desc: values.question.question_desc
+                ? values.question.question_desc
+                : "",
+              question_type: values.question.question_type
+                ? values.question.question_type
+                : "",
+              question_point: values.question.question_point
+                ? values.question.question_point
+                : 0,
+              answer_text: values.question.answer_text
+                ? values.question.answer_text
+                : "",
+              number_of_options: values.question.number_of_options
+                ? values.question.number_of_options
+                : 0,
+              options: values.question.options ? values.question.options : [],
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
+    },
+  });
 
+  //edit question
   const editQuestionMutate = useMutation({
     mutationFn: (values) => {
       const protocol = window.location.protocol;
@@ -92,6 +136,7 @@ export default function EditAssessmentPage() {
     },
   });
 
+  //functions for above mutautions
   const editInfo = (title, desc, score, id) => {
     try {
       const response = infoMutate.mutate({
@@ -105,12 +150,14 @@ export default function EditAssessmentPage() {
     }
   };
 
-  const addQuestion = (id) => {};
+  const addQuestion = (index, question) => {
+    addQuestionMutate.mutate({ question: question, id: id });
+  };
+
   const removeQuestion = (id) => {
     deleteQuestionMutate.mutate(id);
   };
 
-  const { id } = useParams();
   let enableEdit = true;
 
   const fetchAssessments = async () => {
@@ -162,7 +209,17 @@ export default function EditAssessmentPage() {
 
   const [totalPoints, setTotalPoints] = useState(0);
   const [questionsArray, setQuestionsArray] = useState([]);
-  const [newQuestion, setNewQuestion] = useState([]);
+  const [newQuestionsArray, setNewQuestionsArray] = useState([]);
+
+  const removeNewQuestion = (indexToRemove) => {
+    const updatedQuestionsArray = [...newQuestionsArray];
+    updatedQuestionsArray.splice(indexToRemove, 1);
+    setNewQuestionsArray(updatedQuestionsArray);
+  };
+
+  useEffect(() => {
+    console.log(newQuestionsArray);
+  }, [newQuestionsArray]);
 
   return (
     <>
@@ -177,14 +234,7 @@ export default function EditAssessmentPage() {
             handleCreateAssessment(values);
           }}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-          }) => (
+          {({ values, errors, touched, handleChange, handleBlur }) => (
             <Container className="mt-5">
               {setTotalPoints(assessment[0].total_points)}
               {setQuestionsArray(assessment[0].questions)}
@@ -203,7 +253,16 @@ export default function EditAssessmentPage() {
                           </h1>
                         </Col>
                       </Row>
-                      <Row>{assessment[0].total_points}</Row>
+                      <Row>
+                        <Col>
+                          <h1
+                            style={styles.descriptionColor}
+                            className="fw-bold"
+                          >
+                            Total Points: {assessment[0].total_points}
+                          </h1>
+                        </Col>
+                      </Row>
                       <Row className="justify-content-center">
                         <Col md={3}>
                           <div>
@@ -293,12 +352,26 @@ export default function EditAssessmentPage() {
                           ))}
                         </Col>
                       </Row>
+                      <Row>
+                        <Col>
+                          {newQuestionsArray.map((question, index) => (
+                            <NewQuestion
+                              index={index}
+                              question={question}
+                              enableEdit={false}
+                              addQuestion={addQuestion}
+                              removeNewQuestion={removeNewQuestion}
+                            />
+                          ))}
+                        </Col>
+                      </Row>
                       <Button
                         style={styles.primaryButton}
                         className="mt-2"
                         onClick={() => {
-                          setQuestionsArray([...questionsArray, null]);
+                          setNewQuestionsArray([...newQuestionsArray, null]);
                         }}
+                        disabled={newQuestionsArray.length > 0}
                       >
                         Add Question
                       </Button>
@@ -308,7 +381,7 @@ export default function EditAssessmentPage() {
               </Card>
               {/* For Toasters */}
               {infoMutate.isSuccess &&
-                toast.success(infoMutate.data.data.message)}
+                toast.success("Assessment Info updated successfully!")}
               {infoMutate.isError && toast.success("Error updating name")}
               {deleteQuestionMutate.isError &&
                 toast.error("Error deleting question")}
@@ -316,6 +389,9 @@ export default function EditAssessmentPage() {
                 toast.success("Question deleted successfully!")}
               {editQuestionMutate.isSuccess &&
                 toast.success(editQuestionMutate.data.data.message)}
+              {addQuestionMutate.isSuccess &&
+                toast.success(addQuestionMutate.data.data.message)}
+              {addQuestion.isError && toast.error("Error adding question")}
             </Container>
           )}
         </Formik>
