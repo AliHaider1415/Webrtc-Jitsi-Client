@@ -16,13 +16,14 @@ import { Formik, Form } from "formik";
 import { AssessmentSchema } from "../../../utils/Schemas";
 import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import url from "../../../utils/api";
 import auth from "../../../utils/helper";
 import axios from "axios";
 import NewQuestion from "../../../components/company-assessments/NewQuestion";
-
 export default function EditAssessmentPage() {
+  const queryClient = useQueryClient();
+
   const { id } = useParams();
   //info edit
   const infoMutate = useMutation({
@@ -47,6 +48,10 @@ export default function EditAssessmentPage() {
         }
       );
     },
+    onSuccess: (data) => {
+      toast.success(data.data.message);
+      queryClient.invalidateQueries("assessment");
+    },
   });
 
   //delete question
@@ -61,6 +66,10 @@ export default function EditAssessmentPage() {
           },
         }
       );
+    },
+    onSuccess: (data) => {
+      toast.success(data.data.message);
+      queryClient.invalidateQueries("assessment");
     },
   });
   //add new question
@@ -98,6 +107,12 @@ export default function EditAssessmentPage() {
         }
       );
     },
+
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("assessment");
+      toast.success(data.data.message);
+      setNewQuestionsArray([]);
+    },
   });
 
   //edit question
@@ -133,6 +148,10 @@ export default function EditAssessmentPage() {
           },
         }
       );
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("assessment");
+      toast.success(data.data.message);
     },
   });
 
@@ -379,19 +398,6 @@ export default function EditAssessmentPage() {
                   </Form>
                 </CardBody>
               </Card>
-              {/* For Toasters */}
-              {infoMutate.isSuccess &&
-                toast.success(infoMutate.data.data.message)}
-              {infoMutate.isError && toast.success("Error updating name")}
-              {deleteQuestionMutate.isError &&
-                toast.error("Error deleting question")}
-              {deleteQuestionMutate.isSuccess &&
-                toast.success("Question deleted successfully!")}
-              {editQuestionMutate.isSuccess &&
-                toast.success(editQuestionMutate.data.data.message)}
-              {addQuestionMutate.isSuccess &&
-                toast.success(addQuestionMutate.data.data.message)}
-              {addQuestion.isError && toast.error("Error adding question")}
             </Container>
           )}
         </Formik>
