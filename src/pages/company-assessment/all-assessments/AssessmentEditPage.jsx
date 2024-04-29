@@ -30,22 +30,22 @@ export default function EditAssessmentPage() {
       const protocol = window.location.protocol;
       console.log(values.question);
       console.log(values.id);
-      // return axios.put(
-      //   `${protocol}//${url}/assessment/update-assessment/${values.id}/`,
-      //   {
-      //     assessment: {
-      //       title: values.title,
-      //       description: values.desc,
-      //       total_points: values.totalPoints,
-      //     },
-      //   },
+      return axios.put(
+        `${protocol}//${url}/assessment/update-assessment/${values.id}/`,
+        {
+          assessment: {
+            title: values.title,
+            description: values.desc,
+            total_points: values.totalPoints,
+          },
+        },
 
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${auth.auth}`,
-      //     },
-      //   }
-      // );
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
     },
   });
 
@@ -381,7 +381,7 @@ export default function EditAssessmentPage() {
               </Card>
               {/* For Toasters */}
               {infoMutate.isSuccess &&
-                toast.success("Assessment Info updated successfully!")}
+                toast.success(infoMutate.data.data.message)}
               {infoMutate.isError && toast.success("Error updating name")}
               {deleteQuestionMutate.isError &&
                 toast.error("Error deleting question")}
