@@ -15,18 +15,7 @@ import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import styles from "../../utils/styles";
 import BackspaceIcon from "@mui/icons-material/Backspace";
-import { useMutation } from "@tanstack/react-query";
-
-export default function QuestionEdit({
-  index,
-  id,
-  question,
-  enableEdit,
-  addQuestion,
-  removeQuestion,
-  editQuestion,
-  editTitle,
-}) {
+export default function NewQuestion({ question, addQuestion }) {
   return (
     <Card className="mb-4 roboto-thin" style={styles.input}>
       <CardBody>
@@ -34,7 +23,7 @@ export default function QuestionEdit({
           <CardHeader>Question {index + 1}</CardHeader>
           <Button
             className="btn-danger btn  mt-2"
-            onClick={() => removeQuestion(question.id)}
+            onClick={() => removeQuestion(index)}
           >
             Remove Question
           </Button>
@@ -53,7 +42,7 @@ export default function QuestionEdit({
           enableReinitialize
           validationSchema={QuestionSchema}
           onSubmit={(values) => {
-            editQuestion(values, question.id, id);
+            addQuestion(index, values);
           }}
         >
           {({
@@ -65,7 +54,7 @@ export default function QuestionEdit({
             handleSubmit,
             setFieldValue,
           }) => (
-            <Form>
+            <Form onBlur={handleSubmit}>
               <Row className="mt-4">
                 <Col>
                   <Label style={styles.descriptionColor}>
@@ -156,6 +145,7 @@ export default function QuestionEdit({
                   </Input>
                 </Col>
               </Row>
+
               {values.question_type === "MCQ" && (
                 <>
                   <Row className="justify-content-center d-flex">
@@ -276,6 +266,7 @@ export default function QuestionEdit({
                   </Button>
                 </>
               )}
+
               {values.question_type === "True Or False" && (
                 <Row>
                   {values.options.map((option, index) => (
@@ -322,9 +313,6 @@ export default function QuestionEdit({
                   ))}
                 </Row>
               )}
-              <Button style={styles.secondaryButton} onClick={handleSubmit}>
-                Edit Question
-              </Button>
             </Form>
           )}
         </Formik>

@@ -57,9 +57,44 @@ export default function EditAssessmentPage() {
     },
   });
 
-  const editInfo = async (title, desc, score, id) => {
+  const editQuestionMutate = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.put(
+        `${protocol}//${url}/assessment/update-questions/${values.id}/`,
+        {
+          assessment_pk: values.assessmentid,
+          questions: {
+            question_desc: values.question.question_desc
+              ? values.question.question_desc
+              : "",
+            question_type: values.question.question_type
+              ? values.question.question_type
+              : "",
+            number_of_options: values.question.number_of_options
+              ? values.question.number_of_options
+              : 0,
+            answer_text: values.question.answer_text
+              ? values.question.answer_text
+              : "",
+            question_point: values.question.question_point
+              ? values.question.question_point
+              : 0,
+            options: values.question.options ? values.question.options : [],
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
+    },
+  });
+
+  const editInfo = (title, desc, score, id) => {
     try {
-      const response = await infoMutate.mutate({
+      const response = infoMutate.mutate({
         title: title,
         desc: desc,
         score: score,
@@ -69,10 +104,10 @@ export default function EditAssessmentPage() {
       console.error("Mutation error:", error);
     }
   };
+
   const addQuestion = (id) => {};
-  const editQuestion = () => {};
-  const removeQuestion = async (id) => {
-    await deleteQuestionMutate.mutate(id);
+  const removeQuestion = (id) => {
+    deleteQuestionMutate.mutate(id);
   };
 
   const { id } = useParams();
@@ -98,10 +133,18 @@ export default function EditAssessmentPage() {
       console.log(error);
     }
   };
+  const editQuestion = (values, id, ass) => {
+    editQuestionMutate.mutate({
+      question: values,
+      id: id,
+      assessmentid: ass,
+    });
+  };
   //fetching data
   const {
     isPending,
     error,
+    isSuccess,
     data: assessment,
   } = useQuery({
     queryKey: ["assessment"],
@@ -160,6 +203,7 @@ export default function EditAssessmentPage() {
                           </h1>
                         </Col>
                       </Row>
+                      <Row>{assessment[0].total_points}</Row>
                       <Row className="justify-content-center">
                         <Col md={3}>
                           <div>
@@ -208,6 +252,7 @@ export default function EditAssessmentPage() {
                             <Label style={styles.descriptionColor}>
                               Assessment Description
                             </Label>
+
                             <Input
                               id="exampleText"
                               name="description"
@@ -243,6 +288,7 @@ export default function EditAssessmentPage() {
                               addQuestion={addQuestion}
                               removeQuestion={removeQuestion}
                               editQuestion={editQuestion}
+                              id={assessment[0].id}
                             />
                           ))}
                         </Col>
@@ -260,13 +306,16 @@ export default function EditAssessmentPage() {
                   </Form>
                 </CardBody>
               </Card>
-
               {/* For Toasters */}
               {infoMutate.isSuccess &&
                 toast.success(infoMutate.data.data.message)}
               {infoMutate.isError && toast.success("Error updating name")}
               {deleteQuestionMutate.isError &&
                 toast.error("Error deleting question")}
+              {deleteQuestionMutate.isSuccess &&
+                toast.success("Question deleted successfully!")}
+              {editQuestionMutate.isSuccess &&
+                toast.success(editQuestionMutate.data.data.message)}
             </Container>
           )}
         </Formik>
