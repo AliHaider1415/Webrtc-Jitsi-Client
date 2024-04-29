@@ -6,10 +6,31 @@ import AssessmentInfoBox from "../../../components/company-assessments/Assessmen
 import { useQuery } from "@tanstack/react-query";
 import url from "../../../utils/api";
 import auth from "../../../utils/helper";
+import axios from "axios";
 
 export default function AllAssessmentCompany() {
-  //token
+  //fetching data
+  const fetchAssessments = async () => {
+    try {
+      const protocol = window.location.protocol;
+      const response = await axios.get(
+        `${protocol}//${url}/assessment/create-assessment`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
 
+      if (!response.data) {
+        throw new Error("No data received");
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //fetching data
   const {
     isPending,
@@ -17,22 +38,7 @@ export default function AllAssessmentCompany() {
     data: assessments,
   } = useQuery({
     queryKey: ["assessments"],
-    queryFn: async () => {
-      const protocol = window.location.protocol;
-      const response = await fetch(
-        `${protocol}//${url}/assessment/create-assessment`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer  ${auth}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch assessments");
-      }
-      return response.json();
-    },
+    queryFn: fetchAssessments,
   });
 
   if (isPending) return <div> Loading...</div>;
@@ -50,11 +56,17 @@ export default function AllAssessmentCompany() {
       >
         <Button style={styles.primaryButton}>Create new Assessment</Button>
       </Link>
-      <Container className="d-flex justify-content-between flex-wrap">
-        {assessments.length > 0 &&
+      <Container className="d-flex justify-content-center flex-wrap">
+        {assessments.length > 0 ? (
           assessments.map((assessment) => (
-            <AssessmentInfoBox key={assessment.id} assessment={assessment} />
-          ))}
+            <div className="mx-2">
+              {" "}
+              <AssessmentInfoBox key={assessment.id} assessment={assessment} />
+            </div>
+          ))
+        ) : (
+          <h1 className="text-center">No Assessments under your company</h1>
+        )}
       </Container>
     </div>
   );

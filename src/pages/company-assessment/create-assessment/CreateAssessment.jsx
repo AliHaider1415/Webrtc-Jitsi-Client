@@ -31,7 +31,7 @@ export default function CreateAssessmentForm() {
         values,
         {
           headers: {
-            Authorization: `Bearer ${auth}`,
+            Authorization: `Bearer ${auth.auth}`,
           },
         }
       );
@@ -49,7 +49,7 @@ export default function CreateAssessmentForm() {
 
   //handle create assessment
 
-  const handleCreateAssessment = (values) => {
+  const handleCreateAssessment = async (values) => {
     if (questionsArray.length === 0) {
       toast.error("Please add questions to the assessment");
       return;
@@ -58,7 +58,7 @@ export default function CreateAssessmentForm() {
       return;
     }
 
-    const response = createAssessment.mutate({
+    const response = await createAssessment.mutate({
       assessment: {
         title: values.title,
         description: values.description,

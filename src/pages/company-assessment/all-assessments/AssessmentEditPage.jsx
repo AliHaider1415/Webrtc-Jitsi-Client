@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Question from "../../../components/company-assessments/Question";
+import QuestionEdit from "../../../components/company-assessments/QuestionEdit";
 import {
   Container,
   Row,
@@ -16,14 +16,88 @@ import { Formik, Form } from "formik";
 import { AssessmentSchema } from "../../../utils/Schemas";
 import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import url from "../../../utils/api";
 import auth from "../../../utils/helper";
+import axios from "axios";
 
 export default function EditAssessmentPage() {
+  const infoMutate = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.put(
+        `${protocol}//${url}/assessment/update-assessment/${values.id}/`,
+        {
+          assessment: {
+            title: values.title,
+            description: values.desc,
+            total_points: values.totalPoints,
+          },
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
+    },
+  });
+  const deleteQuestionMutate = useMutation({
+    mutationFn: (id) => {
+      const protocol = window.location.protocol;
+      return axios.delete(
+        `${protocol}//${url}/assessment/update-questions/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
+    },
+  });
+
+  const editInfo = async (title, desc, score, id) => {
+    try {
+      const response = await infoMutate.mutate({
+        title: title,
+        desc: desc,
+        score: score,
+        id: id,
+      });
+    } catch (error) {
+      console.error("Mutation error:", error);
+    }
+  };
+  const addQuestion = (id) => {};
+  const editQuestion = () => {};
+  const removeQuestion = async (id) => {
+    await deleteQuestionMutate.mutate(id);
+  };
+
   const { id } = useParams();
   let enableEdit = true;
 
+  const fetchAssessments = async () => {
+    try {
+      const protocol = window.location.protocol;
+      const response = await axios.get(
+        `${protocol}//${url}/assessment/update-assessment/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth}`,
+          },
+        }
+      );
+      if (!response.data) {
+        throw new Error("No data received");
+      }
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //fetching data
   const {
     isPending,
@@ -31,22 +105,7 @@ export default function EditAssessmentPage() {
     data: assessment,
   } = useQuery({
     queryKey: ["assessment"],
-    queryFn: async () => {
-      const protocol = window.location.protocol;
-      const response = await fetch(
-        `${protocol}//${url}/assessment/update-assessment/${id}/`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer  ${auth}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch assessments");
-      }
-      return response.json();
-    },
+    queryFn: fetchAssessments,
   });
 
   const handleCreateAssessment = (values) => {
@@ -58,29 +117,9 @@ export default function EditAssessmentPage() {
     }
   };
 
-  //add question
-  const addQuestion = (index, question) => {
-    const updatedQuestionsArray = [...questionsArray];
-    console.log(question.question_point);
-    setTotalPoints((prev) => prev + question.question_point);
-    updatedQuestionsArray[index] = question;
-    setQuestionsArray(updatedQuestionsArray);
-  };
-
-  //remove question
-  const removeQuestion = (indexToRemove) => {
-    const updatedQuestionsArray = [...questionsArray];
-    const removedQuestion = updatedQuestionsArray[indexToRemove];
-    console.log(removedQuestion);
-    if (removedQuestion && removedQuestion.question_point) {
-      setTotalPoints((prev) => prev - removedQuestion.question_point);
-    }
-    updatedQuestionsArray.splice(indexToRemove, 1);
-    setQuestionsArray(updatedQuestionsArray);
-  };
-
   const [totalPoints, setTotalPoints] = useState(0);
   const [questionsArray, setQuestionsArray] = useState([]);
+  const [newQuestion, setNewQuestion] = useState([]);
 
   return (
     <>
@@ -149,6 +188,20 @@ export default function EditAssessmentPage() {
                               </div>
                             )}
                           </div>
+                          <Button
+                            style={styles.primaryButton}
+                            className="my-2"
+                            onClick={() =>
+                              editInfo(
+                                values.title,
+                                values.description,
+                                assessment[0].total_points,
+                                assessment[0].id
+                              )
+                            }
+                          >
+                            Edit the Title and Description
+                          </Button>
                         </Col>
                         <Col md={9}>
                           <div>
@@ -180,7 +233,7 @@ export default function EditAssessmentPage() {
                       <Row>
                         <Col>
                           {questionsArray.map((question, index) => (
-                            <Question
+                            <QuestionEdit
                               key={index}
                               index={index}
                               handleChange={handleChange}
@@ -188,7 +241,8 @@ export default function EditAssessmentPage() {
                               enableEdit={enableEdit}
                               question={question}
                               addQuestion={addQuestion}
-                              removeQuestion={() => removeQuestion(index)}
+                              removeQuestion={removeQuestion}
+                              editQuestion={editQuestion}
                             />
                           ))}
                         </Col>
@@ -202,20 +256,17 @@ export default function EditAssessmentPage() {
                       >
                         Add Question
                       </Button>
-
-                      {questionsArray.length > 0 && (
-                        <Button
-                          className="mx-1 mt-2"
-                          onClick={handleSubmit}
-                          style={styles.primaryButton}
-                        >
-                          Save the Changes
-                        </Button>
-                      )}
                     </FormGroup>
                   </Form>
                 </CardBody>
               </Card>
+
+              {/* For Toasters */}
+              {infoMutate.isSuccess &&
+                toast.success(infoMutate.data.data.message)}
+              {infoMutate.isError && toast.success("Error updating name")}
+              {deleteQuestionMutate.isError &&
+                toast.error("Error deleting question")}
             </Container>
           )}
         </Formik>

@@ -4,10 +4,29 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import AttemptAssessmentQuestions from "../../../components/job-seeker-assesment/AttemptAssessmentQuestions";
 import ResultAssessmentQuestions from "../../../components/job-seeker-assesment/ResultAssessmentQuestions";
-
+import { useMutation } from "@tanstack/react-query";
+import url from "../../../utils/api";
+import auth from "../../../utils/helper";
+import axios from "axios";
 export default function AttemptAssessmentPage() {
   const navigate = useNavigate();
   const [answers, setAnswers] = useState([]);
+
+  const submitAssessmentMutuation = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.post(
+        `${protocol}//${url}/assessment/create-assessment`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${auth}`,
+          },
+        }
+      );
+    },
+  });
+
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const submitAssessment = () => {
