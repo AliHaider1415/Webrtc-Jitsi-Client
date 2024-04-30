@@ -13,11 +13,14 @@ import SingleAssessmentJobSeeker from "./pages/job-seeker-assesment/Single-Asses
 import Layout from "./layout/Layout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AllAttemptedAssessmentJobSeeker from "./pages/job-seeker-assesment/all-assessments/AllAttempetedAssessmentsJobSeeker";
 import "./App.css";
 import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
 import { FadeLoader } from "react-spinners";
 import loaderStore from "./store/loaderStore/loaderStore";
 import AssessmentEditPage from "./pages/company-assessment/all-assessments/AssessmentEditPage";
+import ResultAssessmentPage from "./pages/job-seeker-assesment/all-assessments/ResultAssessmentPage";
+
 function App() {
   const user = userAuthStore((state) => state.user);
   const loading = loaderStore((state) => state.loader);
@@ -43,6 +46,10 @@ function App() {
                 element={<AllAssessmentJobSeeker />}
               />
               <Route
+                path="/candidate/my-attempted-assessments"
+                element={<AllAttemptedAssessmentJobSeeker />}
+              />
+              <Route
                 path="/candidate/attempt-assessment/:id"
                 element={<AttemptAssessmentPage />}
               />
@@ -53,6 +60,10 @@ function App() {
               <Route
                 path="/company/view-assessments/:id"
                 element={<AssessmentEditPage />}
+              />
+              <Route
+                path="/candidate/result-assessments/:id"
+                element={<ResultAssessmentPage />}
               />
               {/* <Route
 

@@ -65,7 +65,9 @@ export default function AllAssessmentCompany() {
             </div>
           ))
         ) : (
-          <h1 className="text-center">No Assessments under your company</h1>
+          <h1 style={styles.descriptionColor}>
+            No Assessments under your company
+          </h1>
         )}
       </Container>
     </div>

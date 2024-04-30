@@ -21,7 +21,8 @@ export default function QuestionResult(props) {
         <>
           <CardHeader className="fw-bold">Question {index + 1}</CardHeader>
           <CardHeader className="mt-2 fw-bold" style={styles.primaryButton}>
-            Obtained Marks:{question.scored_points}/{question.question_point}
+            Obtained Marks:{question.user_answer.obtained_points}/
+            {question.question_point}
           </CardHeader>
         </>
 
@@ -65,9 +66,10 @@ export default function QuestionResult(props) {
                             name={`options[${idx}].option_text`}
                             value={option.option_text}
                             style={
-                              option.option_text !== question.user_answer
+                              option.option_text !==
+                              question.user_answer.option_text
                                 ? styles.input
-                                : question.scored_points === 0
+                                : question.user_answer.obtained_points === 0
                                 ? styles.wrongAns
                                 : styles.correctAns
                             }
@@ -77,7 +79,8 @@ export default function QuestionResult(props) {
                             type="radio"
                             name="correct_ans"
                             checked={
-                              option.option_text === question.user_answer
+                              option.option_text ===
+                              question.user_answer.answer_text
                             }
                             value={option.option_text}
                             className="radio-inside-input position-absolute"
@@ -104,9 +107,9 @@ export default function QuestionResult(props) {
                 <Input
                   type="textarea"
                   name="correct_ans"
-                  value={question.user_answer}
+                  value={question.user_answer.answer_text}
                   style={
-                    question.scored_points === 0
+                    question.user_answer.obtained_points === 0
                       ? styles.wrongAns
                       : styles.correctAns
                   }

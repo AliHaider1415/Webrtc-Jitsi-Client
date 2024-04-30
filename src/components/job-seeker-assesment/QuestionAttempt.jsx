@@ -36,7 +36,7 @@ export default function QuestionAttempt(props) {
             addAnswers(values, index);
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
+          {({ handleChange, handleBlur, handleSubmit, errors, onBlur }) => (
             <Form onBlur={handleSubmit}>
               <Row className="mt-4">
                 <Col>
@@ -53,6 +53,7 @@ export default function QuestionAttempt(props) {
                   />
                 </Col>
               </Row>
+
               {(question.question_type === "MCQ" ||
                 question.question_type === "True Or False") && (
                 <>

@@ -4,16 +4,15 @@ import { Container } from "reactstrap";
 import axios from "axios";
 import url from "../../../utils/api";
 import authtoken from "../../../utils/helper";
-import AssessmentInfoBox from "../../../components/job-seeker-assesment/AssessmentInfoBox";
 import styles from "../../../utils/styles";
-
-export default function AllAssessmentJobSeeker() {
+import AttemptedAssessmentInfoBox from "../../../components/job-seeker-assesment/AttemptedAssessmentInfoBox";
+export default function AllAttemptedAssessmentJobSeeker() {
   let id = 1;
   const fetchAssessmentsCandidate = async () => {
     try {
       const protocol = window.location.protocol;
       const response = await axios.get(
-        `${protocol}//${url}/assessment/update-answers/${id}/`,
+        `${protocol}//${url}/assessment/create-answers`,
         {
           headers: {
             Authorization: `Bearer ${authtoken.auth2}`,
@@ -38,7 +37,7 @@ export default function AllAssessmentJobSeeker() {
   });
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error .... {error.message}</div>;
+  if (isError) return <div>Error in {error.message}</div>;
 
   return (
     <div>
@@ -46,11 +45,11 @@ export default function AllAssessmentJobSeeker() {
         All My Assessments
       </h1>
       <Container className="d-flex align-items-center justify-content-center">
-        {data.length > 0 ? (
+        {data.assessments.length > 0 ? (
           <Container className="d-flex justify-content-center flex-wrap  ">
-            {data.map((assessment) => (
+            {data.assessments.map((assessment) => (
               <div className="mx-3">
-                <AssessmentInfoBox
+                <AttemptedAssessmentInfoBox
                   key={assessment.id}
                   assessment={assessment}
                 />
@@ -59,7 +58,7 @@ export default function AllAssessmentJobSeeker() {
           </Container>
         ) : (
           <h1 className="fw-bold text-center my-2">
-            No Unattempted Assessments of this company
+            No Attempted Assessments of you
           </h1>
         )}
       </Container>
