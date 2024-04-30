@@ -213,7 +213,7 @@ export default function EditAssessmentPage() {
     isSuccess,
     data: assessment,
   } = useQuery({
-    queryKey: ["assessment"],
+    queryKey: ["assessment", id],
     queryFn: fetchAssessments,
   });
 
@@ -255,9 +255,6 @@ export default function EditAssessmentPage() {
         >
           {({ values, errors, touched, handleChange, handleBlur }) => (
             <Container className="mt-5">
-              {setTotalPoints(assessment[0].total_points)}
-              {setQuestionsArray(assessment[0].questions)}
-              {console.log(assessment)}
               <Card style={styles.assessmentModuleBackground}>
                 <CardBody>
                   <Form>

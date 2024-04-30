@@ -9,22 +9,38 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 import userAuthStore from "../../store/userAuthStore/userAuthStore";
 import LogoutIcon from "@mui/icons-material/Logout";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
 export default function ButtonAppBar() {
   const user = userAuthStore((state) => state.user);
   const logout = userAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOpen(open);
+  };
+
   let menuItems = [];
   if (user === "Employer") {
     menuItems = [
       { text: "Job Posts", route: "/job-posts" },
-      { text: "Assessments", route: "/assessments" },
-      { text: "Create Assessment", route: "/create-assessment" },
+      { text: "My Assessments", route: "/company/company-assessments" },
+      { text: "Create Assessment", route: "/company/create-assessment" },
     ];
   } else if (user === "JobSeeker") {
     menuItems = [
-      { text: "Search Jobs", route: "/search-jobs" },
+      { text: "Get Assessments", route: "/candidate/all-assessments" },
       { text: "Saved Jobs", route: "/saved-jobs" },
       { text: "Applied Jobs", route: "/applied-jobs" },
     ];
@@ -34,6 +50,27 @@ export default function ButtonAppBar() {
     logout();
     navigate("/login");
   };
+
+  const list = () => (
+    <Box
+      sx={{ width: 250 }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <List>
+        {menuItems.map((menuItem, index) => (
+          <ListItem button key={index} component={Link} to={menuItem.route}>
+            <ListItemText primary={menuItem.text} />
+          </ListItem>
+        ))}
+        <ListItem button onClick={handleLogout}>
+          <LogoutIcon />
+          <ListItemText primary="Logout" />
+        </ListItem>
+      </List>
+    </Box>
+  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -45,27 +82,17 @@ export default function ButtonAppBar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            onClick={toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
+            Assessment Module
           </Typography>
           <div>
-            {menuItems.map((menuItem, index) => (
-              <Button
-                key={index}
-                color="inherit"
-                component={Link}
-                to={menuItem.route}
-              >
-                {menuItem.text}
-              </Button>
-            ))}
-            <Button color="inherit" onClick={handleLogout}>
-              <LogoutIcon />
-              Logout
-            </Button>
+            <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+              {list()}
+            </Drawer>
           </div>
         </Toolbar>
       </AppBar>
