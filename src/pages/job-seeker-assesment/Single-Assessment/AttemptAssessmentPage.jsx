@@ -7,20 +7,47 @@ import ResultAssessmentQuestions from "../../../components/job-seeker-assesment/
 import url from "../../../utils/api";
 import auth from "../../../utils/helper";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 export default function AttemptAssessmentPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [answers, setAnswers] = useState([]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const submitAnswers = useMutation({
+    mutationFn: (values) => {
+      console.log(values);
+      const protocol = window.location.protocol;
+      return axios.post(
+        `${protocol}//${url}/assessment/create-answers`,
+        {
+          assessment_pk: values.assessment_pk,
+          answers: values.answers,
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${auth.auth2}`,
+          },
+        }
+      );
+    },
+    onSuccess: (data) => {
+      toast.success(data.data.message);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const fetchAssessment = async () => {
     try {
       const protocol = window.location.protocol;
       const response = await axios.get(
-        `${protocol}//${url}/assessment/update-answers/${id}/`,
+        `${protocol}//${url}/assessment/get-assessment/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${auth.auth2}`,
           },
         }
       );
@@ -39,21 +66,23 @@ export default function AttemptAssessmentPage() {
     isPending,
     error,
     isSuccess,
+    isError,
     data: assessment,
   } = useQuery({
     queryKey: ["assessment"],
     queryFn: fetchAssessment,
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  if (isError) {
+    toast.error("Failed to fetch assessment");
+    console.log("Error");
+  }
+  if (isPending) {
+    return <>Loading....</>;
+  }
 
   const submitAssessment = () => {
-    toast.success("Assessment Submitted Successfully");
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 2000);
-    setIsSubmitted(true);
-    console.log(answers);
+    submitAnswers.mutate({ answers: answers, assessment_pk: assessment[0].id });
   };
   const addAnswers = (answer, index) => {
     let updatedAnswers = [...answers];
@@ -62,10 +91,14 @@ export default function AttemptAssessmentPage() {
   };
 
   return (
-    <AttemptAssessmentQuestions
-      assessment={assessment}
-      submitAssessment={submitAssessment}
-      addAnswers={addAnswers}
-    />
+    <>
+      {assessment && (
+        <AttemptAssessmentQuestions
+          assessment={assessment[0]}
+          submitAssessment={submitAssessment}
+          addAnswers={addAnswers}
+        />
+      )}
+    </>
   );
 }

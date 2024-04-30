@@ -40,4 +40,15 @@ const AssessmentSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   description: Yup.string().required("Description is required"),
 });
-export { LoginSchema, SignUpSchema, QuestionSchema, AssessmentSchema };
+
+const AnswerSchema = Yup.object().shape({
+  question: Yup.string().required("Question id is required"),
+  answer_text: Yup.string().required("Answer is required"),
+});
+export {
+  LoginSchema,
+  SignUpSchema,
+  QuestionSchema,
+  AssessmentSchema,
+  AnswerSchema,
+};

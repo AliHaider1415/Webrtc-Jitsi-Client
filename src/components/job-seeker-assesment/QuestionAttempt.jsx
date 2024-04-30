@@ -12,6 +12,7 @@ import {
   Input,
 } from "reactstrap";
 import { Formik } from "formik";
+import { AnswerSchema } from "../../utils/Schemas";
 
 export default function QuestionAttempt(props) {
   let { question, index, addAnswers } = props;
@@ -27,14 +28,15 @@ export default function QuestionAttempt(props) {
         </>
         <Formik
           initialValues={{
-            correct_ans: "",
+            answer_text: "",
             question: question.id,
           }}
+          validationSchema={AnswerSchema}
           onSubmit={(values) => {
             addAnswers(values, index);
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit }) => (
+          {({ handleChange, handleBlur, handleSubmit, errors, touched }) => (
             <Form onBlur={handleSubmit}>
               <Row className="mt-4">
                 <Col>
@@ -80,7 +82,7 @@ export default function QuestionAttempt(props) {
                               />
                               <Input
                                 type="radio"
-                                name="correct_ans"
+                                name="answer_text"
                                 value={option.option_text}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
@@ -99,7 +101,7 @@ export default function QuestionAttempt(props) {
                   </Row>
                 </>
               )}
-              {question.question_type === "Short" && (
+              {question.question_type === "Text Based" && (
                 <Row className="mt-1">
                   <Col>
                     <Label style={styles.descriptionColor} className="fw-bold">
@@ -107,7 +109,7 @@ export default function QuestionAttempt(props) {
                     </Label>
                     <Input
                       type="textarea"
-                      name="correct_ans"
+                      name="answer_text"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       style={styles.input}
@@ -115,6 +117,9 @@ export default function QuestionAttempt(props) {
                     />
                   </Col>
                 </Row>
+              )}
+              {errors.answer_text && (
+                <div style={styles.errorMessage}>{errors.answer_text}</div>
               )}
             </Form>
           )}

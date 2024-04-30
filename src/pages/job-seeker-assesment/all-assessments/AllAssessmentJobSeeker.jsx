@@ -38,7 +38,7 @@ export default function AllAssessmentJobSeeker() {
   });
 
   if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>An error has occurred: {error.message}</div>;
+  if (isError) return <div>No assessments under this!!</div>;
 
   return (
     <div>
@@ -46,13 +46,19 @@ export default function AllAssessmentJobSeeker() {
         All My Assessments
       </h1>
       <Container className="text-center d-flex align-items-center">
-        <Container className="d-flex justify-content-center flex-wrap  ">
-          {data.map((assessment) => (
-            <div className="mx-3">
-              <AssessmentInfoBox key={assessment.id} assessment={assessment} />
-            </div>
-          ))}
-        </Container>
+        {data.length > 0 && (
+          <Container className="d-flex justify-content-center flex-wrap  ">
+            {data.map((assessment) => (
+              <div className="mx-3">
+                <AssessmentInfoBox
+                  key={assessment.id}
+                  assessment={assessment}
+                />
+              </div>
+            ))}
+            ;
+          </Container>
+        )}
       </Container>
     </div>
   );
