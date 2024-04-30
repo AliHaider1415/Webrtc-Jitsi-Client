@@ -17,10 +17,12 @@ import { SignUpSchema } from "../../../utils/Schemas";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
 import userAuthStore from "../../../store/userAuthStore/userAuthStore";
 import url from "../../../utils/api";
 import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+
 const theme = createTheme();
 
 export default function SignUp() {
@@ -32,75 +34,53 @@ export default function SignUp() {
   const [activeForm, setActiveForm] = useState("JobSeeker");
   const updateUser = userAuthStore((state) => state.setUser);
 
-  const showToastMessage = (message) => {
-    if (message.error) {
-      toast.error(message.error, {});
-    } else {
-      toast.success("Your account has been created successfully", {});
-      localStorage.setItem("access", message.access);
-
-      updateUser(activeForm);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    }
-  };
-
   const changeForm = (value) => {
     setActiveForm(value);
   };
 
-  const signUpMutation = useMutation(async (values) => {
-    const protocol = window.location.protocol;
-    let apiUrl;
+  const signUpMutation = useMutation({
+    mutationFn: (values) => {
+      console.log(values);
+      const protocol = window.location.protocol;
+      let apiUrl;
 
-    switch (activeForm) {
-      case "Employer":
-        apiUrl = `${protocol}//${url}/company/company-signup`;
-        break;
-      case "JobSeeker":
-        apiUrl = `${protocol}//${url}/candidates/user-signup`;
-        break;
-      case "Trainer":
-        apiUrl = `${protocol}//${url}/candidates/user-signup`;
-        break;
-      default:
-        break;
-    }
+      switch (activeForm) {
+        case "Employer":
+          apiUrl = `${protocol}//${url}/company/company-signup`;
+          break;
+        case "JobSeeker":
+          apiUrl = `${protocol}//${url}/candidates/user-signup`;
+          break;
+        case "Trainer":
+          apiUrl = `${protocol}//${url}/candidates/user-signup`;
+          break;
+        default:
+          break;
+      }
 
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: values.email,
-        name: values.name,
-        phone: values.phone,
-        password: values.password,
-        country: values.country,
-        is_candidate: activeForm === "JobSeeker",
-        is_company_handler: activeForm === "Employer",
-      }),
-    });
+      return axios.post(`${apiUrl}`, values);
+    },
 
-    const json = await response.json();
-    return json;
+    onError: (error) => {
+      console.log(error);
+      toast.error("Error creating  user...");
+    },
+    onSuccess: (data) => {
+      if (data.data.error) {
+        toast.error(data.data.error, {});
+        return;
+      }
+      toast.success(data.data.message, {});
+      localStorage.setItem("access", data.data.access);
+      setTimeout(() => {
+        updateUser(activeForm);
+        navigate("/");
+      }, 2000);
+    },
   });
-
-  const handleSignUp = async (values) => {
-    try {
-      const data = await signUpMutation.mutateAsync(values);
-      showToastMessage(data);
-    } catch (error) {
-      console.error("An error occurred:", error);
-      toast.error("An error occurred while signing up");
-    }
-  };
 
   return (
     <div>
-      {" "}
       <Formik
         initialValues={{
           email: "",
@@ -111,7 +91,15 @@ export default function SignUp() {
         }}
         validationSchema={SignUpSchema}
         onSubmit={(values) => {
-          handleSignUp(values);
+          signUpMutation.mutate({
+            email: values.email,
+            name: values.name,
+            phone: values.phone,
+            password: values.password,
+            country: values.country,
+            is_candidate: activeForm === "JobSeeker",
+            is_company_handler: activeForm === "Employer",
+          });
         }}
       >
         {({

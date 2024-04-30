@@ -30,8 +30,8 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="">
+        Assessment Module
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -42,40 +42,42 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
-  useEffect(() => {
-    logout();
-  }, []);
   const navigate = useNavigate();
   const updateUser = userAuthStore((state) => state.setUser);
   const logout = userAuthStore((state) => state.logout);
 
-  const LoggingUser = (message) => {
-    if (message.error) {
-      toast.error(message.error, {});
-    } else {
-      toast.success(message.message, {});
-      console.log(message.access);
-      localStorage.setItem("access", message.access);
-      setTimeout(() => {
-        updateUser(message.UserType);
-        console.log(message);
+  useEffect(() => {
+    logout();
+  }, []);
 
-        navigate("/");
-      }, 2000);
-    }
-  };
-
+  //handle Login
   const loginMutation = useMutation({
     mutationFn: (values) => {
       const protocol = window.location.protocol;
       return axios.post(`${protocol}//${url}/accounts/login`, values);
     },
+
+    onError: (error) => {
+      console.log(error);
+      toast.error("Error logging in user...");
+    },
+    onSuccess: (data) => {
+      if (data.data.error) {
+        toast.error(data.data.error, {});
+        return;
+      }
+      toast.success(data.data.message, {});
+      localStorage.setItem("access", data.data.access);
+
+      setTimeout(() => {
+        updateUser(data.data.UserType);
+        navigate("/");
+      }, 2000);
+    },
   });
 
   return (
     <div>
-      {loginMutation.isSuccess && LoggingUser(loginMutation.data.data)}
-      {loginMutation.isError && toast.error("Error !!")}
       <Formik
         initialValues={{
           email: "",
