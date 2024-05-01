@@ -40,10 +40,8 @@ export default function SignUp() {
 
   const signUpMutation = useMutation({
     mutationFn: (values) => {
-      console.log(values);
       const protocol = window.location.protocol;
       let apiUrl;
-
       switch (activeForm) {
         case "Employer":
           apiUrl = `${protocol}//${url}/company/company-signup`;
@@ -57,8 +55,16 @@ export default function SignUp() {
         default:
           break;
       }
-
-      return axios.post(`${apiUrl}`, values);
+      let response = axios.post(`${apiUrl}`, {
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        country: values.country,
+        phone: values.phone,
+        is_candidate: activeForm === "JobSeeker",
+        is_company_handler: activeForm === "Employer",
+      });
+      return response;
     },
 
     onError: (error) => {
@@ -66,16 +72,10 @@ export default function SignUp() {
       toast.error("Error creating  user...");
     },
     onSuccess: (data) => {
-      if (data.data.error) {
-        toast.error(data.data.error, {});
-        return;
+      if (data.statusText == "OK" || data.statusText == "Created") {
+        toast.success("User created successfully Now Login..");
+        navigate("/login");
       }
-      toast.success(data.data.message, {});
-      localStorage.setItem("access", data.data.access);
-      setTimeout(() => {
-        updateUser(activeForm);
-        navigate("/");
-      }, 2000);
     },
   });
 

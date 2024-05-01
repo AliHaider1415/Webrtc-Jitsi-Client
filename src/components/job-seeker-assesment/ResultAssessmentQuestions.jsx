@@ -45,8 +45,7 @@ export default function ResultAssessmentQuestions(props) {
                     className="text-center fw-bold"
                     style={styles.secondaryButton}
                   >
-                    You have scored {result.obtained_points}/
-                    {result.total_points} marks
+                    You have scored {result.score}/{result.total_points} marks
                   </h4>
                 </Col>
               </Row>

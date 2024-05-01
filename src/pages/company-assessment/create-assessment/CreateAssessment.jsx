@@ -15,7 +15,6 @@ import { Formik, Form } from "formik";
 import { AssessmentSchema } from "../../../utils/Schemas";
 import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
-import auth from "../../../utils/helper";
 import url from "../../../utils/api";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -31,7 +30,7 @@ export default function CreateAssessmentForm() {
         values,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -58,7 +57,7 @@ export default function CreateAssessmentForm() {
       return;
     }
 
-    const response = await createAssessment.mutate({
+    await createAssessment.mutate({
       assessment: {
         title: values.title,
         description: values.description,

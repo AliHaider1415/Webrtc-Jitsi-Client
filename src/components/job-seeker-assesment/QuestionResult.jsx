@@ -67,7 +67,7 @@ export default function QuestionResult(props) {
                             value={option.option_text}
                             style={
                               option.option_text !==
-                              question.user_answer.option_text
+                              question.user_answer.answer_text
                                 ? styles.input
                                 : question.user_answer.obtained_points === 0
                                 ? styles.wrongAns
@@ -98,7 +98,7 @@ export default function QuestionResult(props) {
               </Row>
             </>
           )}
-          {question.question_type === "Short" && (
+          {question.question_type === "Text Based" && (
             <Row className="mt-1">
               <Col>
                 <Label style={styles.descriptionColor} className="fw-bold">

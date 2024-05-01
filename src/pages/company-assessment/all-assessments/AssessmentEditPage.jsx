@@ -18,7 +18,6 @@ import { toast } from "react-toastify";
 import styles from "../../../utils/styles";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import url from "../../../utils/api";
-import auth from "../../../utils/helper";
 import axios from "axios";
 import NewQuestion from "../../../components/company-assessments/NewQuestion";
 export default function EditAssessmentPage() {
@@ -43,7 +42,7 @@ export default function EditAssessmentPage() {
 
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -62,7 +61,7 @@ export default function EditAssessmentPage() {
         `${protocol}//${url}/assessment/update-questions/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -102,7 +101,7 @@ export default function EditAssessmentPage() {
         },
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -144,7 +143,7 @@ export default function EditAssessmentPage() {
         },
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -158,7 +157,7 @@ export default function EditAssessmentPage() {
   //functions for above mutautions
   const editInfo = (title, desc, score, id) => {
     try {
-      const response = infoMutate.mutate({
+      infoMutate.mutate({
         title: title,
         desc: desc,
         score: score,
@@ -186,7 +185,7 @@ export default function EditAssessmentPage() {
         `${protocol}//${url}/assessment/update-assessment/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );

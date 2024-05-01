@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import AssessmentInfoBox from "../../../components/company-assessments/AssessmentInfoBox";
 import { useQuery } from "@tanstack/react-query";
 import url from "../../../utils/api";
-import auth from "../../../utils/helper";
 import axios from "axios";
 
 export default function AllAssessmentCompany() {
@@ -17,7 +16,7 @@ export default function AllAssessmentCompany() {
         `${protocol}//${url}/assessment/create-assessment`,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );

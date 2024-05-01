@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Container } from "reactstrap";
 import axios from "axios";
 import url from "../../../utils/api";
-import authtoken from "../../../utils/helper";
 import AssessmentInfoBox from "../../../components/job-seeker-assesment/AssessmentInfoBox";
 import styles from "../../../utils/styles";
 
@@ -13,10 +12,10 @@ export default function AllAssessmentJobSeeker() {
     try {
       const protocol = window.location.protocol;
       const response = await axios.get(
-        `${protocol}//${url}/assessment/update-answers/${id}/`,
+        `${protocol}//${url}/assessment/get-assessment`,
         {
           headers: {
-            Authorization: `Bearer ${authtoken.auth2}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );

@@ -7,14 +7,12 @@ import {
   FormGroup,
   Row,
   Col,
-  Button,
 } from "reactstrap";
 import styles from "../../../utils/styles";
 import QuestionResult from "../../../components/job-seeker-assesment/QuestionResult";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import auth from "../../../utils/helper";
 import url from "../../../utils/api";
 import { toast } from "react-toastify";
 
@@ -27,7 +25,7 @@ export default function ResultAssessmentPage() {
         `${protocol}//${url}/assessment/update-answers/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth2}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -44,8 +42,7 @@ export default function ResultAssessmentPage() {
 
   const {
     isPending,
-    error,
-    isSuccess,
+
     isError,
     data: result,
   } = useQuery({
@@ -92,7 +89,7 @@ export default function ResultAssessmentPage() {
                     className="text-center fw-bold"
                     style={styles.secondaryButton}
                   >
-                    You have scored ?/
+                    You have scored {result.score}/
                     {result.assessment.total_points} marks
                   </h4>
                 </Col>

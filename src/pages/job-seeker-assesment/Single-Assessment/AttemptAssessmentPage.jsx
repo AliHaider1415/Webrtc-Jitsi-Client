@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import AttemptAssessmentQuestions from "../../../components/job-seeker-assesment/AttemptAssessmentQuestions";
-import ResultAssessmentQuestions from "../../../components/job-seeker-assesment/ResultAssessmentQuestions";
 import url from "../../../utils/api";
-import auth from "../../../utils/helper";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 export default function AttemptAssessmentPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [answers, setAnswers] = useState([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const submitAnswers = useMutation({
     mutationFn: (values) => {
@@ -27,7 +22,7 @@ export default function AttemptAssessmentPage() {
 
         {
           headers: {
-            Authorization: `Bearer ${auth.auth2}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -47,7 +42,7 @@ export default function AttemptAssessmentPage() {
         `${protocol}//${url}/assessment/get-assessment/${id}/`,
         {
           headers: {
-            Authorization: `Bearer ${auth.auth2}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
@@ -64,12 +59,11 @@ export default function AttemptAssessmentPage() {
 
   const {
     isPending,
-    error,
-    isSuccess,
+
     isError,
     data: assessment,
   } = useQuery({
-    queryKey: ["assessment"],
+    queryKey: ["assessment", id],
     queryFn: fetchAssessment,
   });
 

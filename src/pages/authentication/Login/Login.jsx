@@ -66,6 +66,7 @@ export default function Login() {
         toast.error(data.data.error, {});
         return;
       }
+      console.log(data);
       toast.success(data.data.message, {});
       localStorage.setItem("access", data.data.access);
 
@@ -161,7 +162,7 @@ export default function Login() {
                       variant="contained"
                       sx={{ mt: 3, mb: 2 }}
                       onClick={handleSubmit}
-                      disabled={loginMutation.isLoading}
+                      disabled={loginMutation.isPending}
                     >
                       {loginMutation.isLoading ? "Signing in..." : "Sign In"}
                     </Button>

@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Container } from "reactstrap";
 import axios from "axios";
 import url from "../../../utils/api";
-import authtoken from "../../../utils/helper";
 import styles from "../../../utils/styles";
 import AttemptedAssessmentInfoBox from "../../../components/job-seeker-assesment/AttemptedAssessmentInfoBox";
 export default function AllAttemptedAssessmentJobSeeker() {
@@ -15,7 +14,7 @@ export default function AllAttemptedAssessmentJobSeeker() {
         `${protocol}//${url}/assessment/create-answers`,
         {
           headers: {
-            Authorization: `Bearer ${authtoken.auth2}`,
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
