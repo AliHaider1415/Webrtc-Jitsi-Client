@@ -72,7 +72,7 @@ export default function SignUp() {
       toast.error("Error creating  user...");
     },
     onSuccess: (data) => {
-      if (data.statusText == "OK" || data.statusText == "Created") {
+      if (data.statusText === "OK" || data.statusText === "Created") {
         toast.success("User created successfully Now Login..");
         navigate("/login");
       }

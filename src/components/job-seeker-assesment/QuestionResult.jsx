@@ -66,12 +66,15 @@ export default function QuestionResult(props) {
                             name={`options[${idx}].option_text`}
                             value={option.option_text}
                             style={
-                              option.option_text !==
+                              option.option_text ===
                               question.user_answer.answer_text
-                                ? styles.input
-                                : question.user_answer.obtained_points === 0
-                                ? styles.wrongAns
-                                : styles.correctAns
+                                ? question.user_answer.answer_text ===
+                                  question.answer_text
+                                  ? styles.correctAns
+                                  : styles.wrongAns
+                                : question.answer_text === option.option_text
+                                ? styles.correctAns
+                                : styles.input
                             }
                           />
 

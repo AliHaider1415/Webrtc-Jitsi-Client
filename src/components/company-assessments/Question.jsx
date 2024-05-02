@@ -165,7 +165,6 @@ export default function Question({
                         }}
                       >
                         <Row>
-                          {" "}
                           <Col xs={10} sm={10} md={11}>
                             <div className="position-relative d-flex align-items-center">
                               <Input
@@ -318,6 +317,9 @@ export default function Question({
                     </Col>
                   ))}
                 </Row>
+              )}
+              {errors.answer_text && touched.answer_text && (
+                <div style={styles.errorMessage}>{errors.answer_text}</div>
               )}
             </Form>
           )}

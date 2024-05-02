@@ -31,7 +31,7 @@ export default function AllAttemptedAssessmentJobSeeker() {
   };
 
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["assessments", id],
+    queryKey: ["assessments"],
     queryFn: fetchAssessmentsCandidate,
   });
 

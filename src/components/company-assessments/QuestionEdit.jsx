@@ -15,7 +15,6 @@ import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import styles from "../../utils/styles";
 import BackspaceIcon from "@mui/icons-material/Backspace";
-import { useMutation } from "@tanstack/react-query";
 
 export default function QuestionEdit({
   index,
