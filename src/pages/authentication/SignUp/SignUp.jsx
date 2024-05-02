@@ -129,10 +129,10 @@ export default function SignUp() {
                   <Typography component="h6" variant="h6">
                     Create {activeForm} Account
                   </Typography>
-
                   <Grid container spacing={3} justifyContent="center">
                     <Grid item xs={12} sm={4}>
                       <Button
+                        fullWidth
                         variant={
                           activeForm === "JobSeeker" ? "contained" : "outlined"
                         }
@@ -143,6 +143,7 @@ export default function SignUp() {
                     </Grid>
                     <Grid item xs={12} sm={4}>
                       <Button
+                        fullWidth
                         variant={
                           activeForm === "Employer" ? "contained" : "outlined"
                         }
@@ -153,6 +154,7 @@ export default function SignUp() {
                     </Grid>
                     <Grid item xs={12} sm={4}>
                       <Button
+                        fullWidth
                         variant={
                           activeForm === "Trainer" ? "contained" : "outlined"
                         }
@@ -162,6 +164,7 @@ export default function SignUp() {
                       </Button>
                     </Grid>
                   </Grid>
+
                   <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
                     <LockOutlinedIcon />
                   </Avatar>
