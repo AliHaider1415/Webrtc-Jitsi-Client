@@ -42,10 +42,10 @@ export default function AllAssessmentJobSeeker() {
   return (
     <div>
       <h1 className="text-center fw-bold mt-2" style={styles.descriptionColor}>
-        All My Assessments
+        Un Attempted Assessments
       </h1>
       <Container className="d-flex align-items-center justify-content-center">
-        {data.length > 0 ? (
+        {data ? (
           <Container className="d-flex justify-content-center flex-wrap  ">
             {data.map((assessment) => (
               <div className="mx-3">

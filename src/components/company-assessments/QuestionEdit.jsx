@@ -14,7 +14,7 @@ import {
 import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import styles from "../../utils/styles";
-import BackspaceIcon from "@mui/icons-material/Backspace";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function QuestionEdit({
   index,
@@ -224,7 +224,7 @@ export default function QuestionEdit({
                           <Col xs={2} sm={2} md={1}>
                             {values.number_of_options > 2 && (
                               <div>
-                                <BackspaceIcon
+                                <DeleteIcon
                                   onClick={() => {
                                     const updatedOptions =
                                       values.options.filter(

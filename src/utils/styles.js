@@ -54,6 +54,12 @@ const styles = {
     borderRadius: "5px",
     color: "red",
   },
+
+  HorizontalCardStyles: {
+    position: "relative",
+    zIndex: 1,
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  },
 };
 
 export default styles;

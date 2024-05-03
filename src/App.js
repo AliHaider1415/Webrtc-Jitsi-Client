@@ -45,7 +45,7 @@ function App() {
                 path="/company/view-assessments/:id"
                 element={
                   <CompanyRoute user={user}>
-                    element={<AssessmentEditPage />}
+                    <AssessmentEditPage />
                   </CompanyRoute>
                 }
               />
@@ -53,7 +53,7 @@ function App() {
                 path="/company/create-assessment"
                 element={
                   <CompanyRoute user={user}>
-                    element={<CreateAssessment />}
+                    <CreateAssessment />
                   </CompanyRoute>
                 }
               />
@@ -62,7 +62,7 @@ function App() {
                 path="/candidate/all-assessments"
                 element={
                   <JobSeekerRoute user={user}>
-                    element={<AllAssessmentJobSeeker />}
+                    <AllAssessmentJobSeeker />
                   </JobSeekerRoute>
                 }
               />
@@ -70,7 +70,7 @@ function App() {
                 path="/candidate/attempt-assessment/:id"
                 element={
                   <JobSeekerRoute user={user}>
-                    element={<AttemptAssessmentPage />}
+                    <AttemptAssessmentPage />
                   </JobSeekerRoute>
                 }
               />
@@ -78,7 +78,7 @@ function App() {
                 path="/candidate/my-attempted-assessments"
                 element={
                   <JobSeekerRoute user={user}>
-                    element={<AllAttemptedAssessmentJobSeeker />}
+                    <AllAttemptedAssessmentJobSeeker />
                   </JobSeekerRoute>
                 }
               />
@@ -86,7 +86,7 @@ function App() {
                 path="/candidate/result-assessments/:id"
                 element={
                   <JobSeekerRoute user={user}>
-                    element={<ResultAssessmentPage />}
+                    <ResultAssessmentPage />
                   </JobSeekerRoute>
                 }
               />

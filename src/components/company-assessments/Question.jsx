@@ -14,7 +14,7 @@ import {
 import { Formik, Form } from "formik";
 import { QuestionSchema } from "../../utils/Schemas";
 import styles from "../../utils/styles";
-import BackspaceIcon from "@mui/icons-material/Backspace";
+import DeleteIcon from "@mui/icons-material/Delete";
 export default function Question({
   index,
   question,
@@ -217,10 +217,10 @@ export default function Question({
                               )}
                             </div>
                           </Col>
-                          <Col xs={2} sm={2} md={1}>
+                          <Col xs={2} sm={2} md={1} className="my-1">
                             {values.number_of_options > 2 && (
                               <div>
-                                <BackspaceIcon
+                                <DeleteIcon
                                   onClick={() => {
                                     const updatedOptions =
                                       values.options.filter(
@@ -317,9 +317,6 @@ export default function Question({
                     </Col>
                   ))}
                 </Row>
-              )}
-              {errors.answer_text && touched.answer_text && (
-                <div style={styles.errorMessage}>{errors.answer_text}</div>
               )}
             </Form>
           )}

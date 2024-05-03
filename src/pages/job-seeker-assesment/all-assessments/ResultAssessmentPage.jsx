@@ -8,16 +8,17 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import styles from "../../../utils/styles";
-import QuestionResult from "../../../components/job-seeker-assesment/QuestionResult";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import url from "../../../utils/api";
 import { toast } from "react-toastify";
+import styles from "../../../utils/styles";
+import QuestionResult from "../../../components/job-seeker-assesment/QuestionResult";
 
 export default function ResultAssessmentPage() {
   let { id } = useParams();
+
   const fetchResult = async () => {
     try {
       const protocol = window.location.protocol;
@@ -37,12 +38,12 @@ export default function ResultAssessmentPage() {
       return response.data;
     } catch (error) {
       console.log(error);
+      throw new Error("Failed to fetch assessment");
     }
   };
 
   const {
-    isPending,
-
+    isLoading,
     isError,
     data: result,
   } = useQuery({
@@ -54,46 +55,39 @@ export default function ResultAssessmentPage() {
     toast.error("Failed to fetch assessment");
     console.log("Error");
   }
-  if (isPending) {
-    return <>Loading....</>;
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
     <Container className="mt-5">
-      <Card style={styles.assessmentModuleBackground}>
+      <Card
+        className="p-4"
+        style={{
+          ...styles.HorizontalCardStyles,
+          ...styles.assessmentModuleBackground,
+        }}
+      >
         <CardBody>
+          <h1 className="fw-bold text-center mb-4" style={{ color: "#6c757d" }}>
+            Result
+          </h1>
+          <h1
+            className="text-center mb-4 fw-bold"
+            style={styles.descriptionColor}
+          >
+            {result.assessment.title}
+          </h1>
+          <h4
+            className="text-center mb-4 fw-bold"
+            style={styles.secondaryButton}
+          >
+            You have scored {result.score}/{result.assessment.total_points}{" "}
+            marks
+          </h4>
           <Form>
             <FormGroup>
-              <Row>
-                <h1
-                  style={{ color: "#6c757d" }}
-                  className="fw-bold text-center"
-                >
-                  Result
-                </h1>
-              </Row>
-              <Row>
-                <Col>
-                  <h1
-                    className="text-center mb-4 fw-bold"
-                    style={styles.descriptionColor}
-                  >
-                    {result.assessment.title}
-                  </h1>
-                </Col>
-              </Row>
-
-              <Row>
-                <Col>
-                  <h4
-                    className="text-center fw-bold"
-                    style={styles.secondaryButton}
-                  >
-                    You have scored {result.score}/
-                    {result.assessment.total_points} marks
-                  </h4>
-                </Col>
-              </Row>
               <Row>
                 <Col>
                   {result.assessment.questions.map((question, index) => (
