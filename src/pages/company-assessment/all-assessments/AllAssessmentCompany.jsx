@@ -46,16 +46,18 @@ export default function AllAssessmentCompany() {
   return (
     <div>
       {console.log(assessments)}
-      <h1 className="text-center fw-bold mt-2" style={styles.descriptionColor}>
+      <h1 className="text-center fw-bold my-2" style={styles.descriptionColor}>
         Assessments under your Company
       </h1>
       <Link
         to="/company/create-assessment"
-        className="d-flex justify-content-center"
+        className="d-flex justify-content-center my-2"
       >
-        <Button style={styles.primaryButton}>Create new Assessment</Button>
+        <div>
+          <Button style={styles.primaryButton}>Create new Assessment</Button>
+        </div>
       </Link>
-      <Container className="d-flex justify-content-center flex-wrap">
+      <Container className="d-flex justify-content-center flex-wrap my-2">
         {assessments.length > 0 ? (
           assessments.map((assessment) => (
             <div className="mx-2">

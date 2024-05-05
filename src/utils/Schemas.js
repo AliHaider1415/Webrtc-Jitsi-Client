@@ -43,8 +43,9 @@ const AssessmentSchema = Yup.object().shape({
 
 const AnswerSchema = Yup.object().shape({
   question: Yup.string().required("Question id is required"),
-  answer_text: Yup.string().required("Answer is required"),
+  answer_text: Yup.string().required("Answer is Required"),
 });
+
 export {
   LoginSchema,
   SignUpSchema,

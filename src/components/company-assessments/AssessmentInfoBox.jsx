@@ -11,7 +11,9 @@ export default function AssessmentInfoBox({ assessment }) {
     >
       <div className="flex-grow-1">
         <CardHeader style={{ width: "200px", height: "105px" }}>
-          <h5 style={{ marginBottom: "0" }}>{assessment.title}</h5>
+          <h5 style={{ marginBottom: "0" }}>
+            {assessment.title.substring(0, 50)}
+          </h5>
         </CardHeader>
         <CardBody>
           <CardText

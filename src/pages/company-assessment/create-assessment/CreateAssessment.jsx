@@ -43,8 +43,8 @@ export default function CreateAssessmentForm() {
   //question array
   const [questionsArray, setQuestionsArray] = useState([]);
   useEffect(() => {
-    console.log(questionsArray);
-  }, [questionsArray]);
+    console.log(totalPoints);
+  }, [totalPoints]);
 
   //handle create assessment
 
@@ -68,24 +68,27 @@ export default function CreateAssessmentForm() {
   };
 
   //add question
+  //add question
   const addQuestion = (index, question) => {
     const updatedQuestionsArray = [...questionsArray];
-    console.log(question.question_point);
-    setTotalPoints((prev) => prev + question.question_point);
     updatedQuestionsArray[index] = question;
     setQuestionsArray(updatedQuestionsArray);
+    setTotalPoints(
+      (prevTotalPoints) => prevTotalPoints + question.question_point
+    );
   };
 
   //remove question
   const removeQuestion = (indexToRemove) => {
-    const updatedQuestionsArray = [...questionsArray];
-    const removedQuestion = updatedQuestionsArray[indexToRemove];
-    console.log(removedQuestion);
-
+    const removedQuestion = questionsArray[indexToRemove];
     if (removedQuestion && removedQuestion.question_point) {
-      setTotalPoints((prev) => prev - removedQuestion.question_point);
+      setTotalPoints(
+        (prevTotalPoints) => prevTotalPoints - removedQuestion.question_point
+      );
     }
-    updatedQuestionsArray.splice(indexToRemove, 1);
+    const updatedQuestionsArray = questionsArray.filter(
+      (_, index) => index !== indexToRemove
+    );
     setQuestionsArray(updatedQuestionsArray);
   };
 
@@ -209,7 +212,6 @@ export default function CreateAssessmentForm() {
                   >
                     Add Question
                   </Button>
-
                   {questionsArray.length > 0 && (
                     <Button
                       className="mx-1 mt-2"

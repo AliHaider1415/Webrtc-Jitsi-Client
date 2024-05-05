@@ -33,7 +33,7 @@ export default function QuestionAttempt(props) {
           }}
           validationSchema={AnswerSchema}
           onSubmit={(values) => {
-            addAnswers(values, index);
+            addAnswers(values);
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, errors, onBlur }) => (

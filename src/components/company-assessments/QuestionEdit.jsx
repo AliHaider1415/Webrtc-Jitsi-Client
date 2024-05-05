@@ -321,7 +321,11 @@ export default function QuestionEdit({
                   ))}
                 </Row>
               )}
-              <Button style={styles.secondaryButton} onClick={handleSubmit}>
+              <Button
+                style={styles.secondaryButton}
+                className="mx-1"
+                onClick={handleSubmit}
+              >
                 Edit Question
               </Button>
             </Form>
