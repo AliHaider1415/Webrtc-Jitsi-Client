@@ -17,6 +17,7 @@ import "./App.css";
 import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
 import AssessmentEditPage from "./pages/company-assessment/all-assessments/AssessmentEditPage";
 import ResultAssessmentPage from "./pages/job-seeker-assesment/all-assessments/ResultAssessmentPage";
+import Lobby from "./pages/screens/Lobby";
 
 function App() {
   const user = userAuthStore((state) => state.user);
@@ -26,6 +27,7 @@ function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
+              <Route path="/lobby" element={<Lobby />} />
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               {/* Authentication Routes */}
@@ -57,6 +59,7 @@ function App() {
                   </CompanyRoute>
                 }
               />
+
               {/* Candidate Routes */}
               <Route
                 path="/candidate/all-assessments"
