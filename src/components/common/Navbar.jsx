@@ -36,6 +36,8 @@ export default function ButtonAppBar() {
       { text: "Job Posts", route: "/job-posts" },
       { text: "My Assessments", route: "/company/company-assessments" },
       { text: "Create Assessment", route: "/company/create-assessment" },
+
+      { text: "Interviews Scheduled", route: "/company/all-interviews" },
     ];
   } else if (user === "JobSeeker") {
     menuItems = [
@@ -47,6 +49,8 @@ export default function ButtonAppBar() {
 
       { text: "Saved Jobs", route: "/saved-jobs" },
       { text: "Applied Jobs", route: "/applied-jobs" },
+
+      { text: "Interviews Scheduled", route: "/candidate/all-interviews" },
     ];
   }
 

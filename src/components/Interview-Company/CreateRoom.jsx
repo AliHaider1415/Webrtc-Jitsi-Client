@@ -11,13 +11,41 @@ import {
   Label,
   Button,
 } from "reactstrap";
-
 import { ScheduleInterviewSchema } from "../../utils/Schemas";
-
+import axios from "axios";
+import url from "../../utils/api";
+import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
 import styles from "../../utils/styles";
 
 export default function CreateRoom() {
+  const createRoom = useMutation({
+    mutationFn: (values) => {
+      const protocol = window.location.protocol;
+      return axios.post(
+        `${protocol}//${url}/assessment/create-assessment`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
+          },
+        }
+      );
+    },
+    onSuccess: (data) => {
+      //   queryClient.invalidateQueries("assessment");
+      //   toast.success(data.data.message);
+    },
+  });
+
+  const handleCreateAssessment = async (values) => {
+    await createRoom.mutate({
+      assessment: {
+        title: values.title,
+        description: values.description,
+      },
+    });
+  };
   return (
     <CardBody>
       <Formik
