@@ -12,3 +12,11 @@ export const CompanyRoute = ({ user, children }) => {
 export const TrainerRoute = ({ user, children }) => {
   return user === "Trainer" ? children : <Navigate to="/" />;
 };
+
+export const CommonRoute = ({ user, children }) => {
+  return user === "Employer" || user === "JobSeeker" ? (
+    children
+  ) : (
+    <Navigate to="/" />
+  );
+};

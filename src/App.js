@@ -4,7 +4,11 @@ import userAuthStore from "./store/userAuthStore/userAuthStore";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import Login from "./pages/authentication/Login/Login";
 import SignUp from "./pages/authentication/SignUp/SignUp";
-import { CompanyRoute, JobSeekerRoute } from "./routes/RouteCategories";
+import {
+  CommonRoute,
+  CompanyRoute,
+  JobSeekerRoute,
+} from "./routes/RouteCategories";
 import AllAssessmentCompany from "./pages/company-assessment/all-assessments/AllAssessmentCompany";
 import SingleAssessmentCompany from "./pages/company-assessment/Single-Assessment/SingleAssessmentCompany";
 import CreateAssessment from "./pages/company-assessment/create-assessment/CreateAssessment";
@@ -21,6 +25,7 @@ import Lobby from "./pages/screens/Lobby";
 import AllInterviewsCandidate from "./pages/AllInterviewsCandidate/AllInterviewsCandidate";
 import Room from "./pages/screens/Room";
 import AllInterviewsCompany from "./pages/AllInterviewsCompany/AllInterviewsCompany";
+import InterviewRoom from "./pages/InterviewRoom/InterviewRoom";
 
 function App() {
   const user = userAuthStore((state) => state.user);
@@ -30,19 +35,6 @@ function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
-              {/* Temporary Paths */}
-              <Route
-                path="/company/all-interviews"
-                element={<AllInterviewsCompany />}
-              />
-
-              <Route
-                path="/candidate/all-interviews"
-                element={<AllInterviewsCandidate />}
-              />
-
-              {/* ,...... */}
-
               <Route path="/lobby" element={<Lobby />} />
               <Route path="/room" element={<Room />} />
               {/* Public Routes */}
@@ -57,6 +49,15 @@ function App() {
                 element={
                   <CompanyRoute user={user}>
                     <AllAssessmentCompany />
+                  </CompanyRoute>
+                }
+              />
+
+              <Route
+                path="/company/all-interviews"
+                element={
+                  <CompanyRoute user={user}>
+                    <AllInterviewsCompany />
                   </CompanyRoute>
                 }
               />
@@ -77,19 +78,20 @@ function App() {
                 }
               />
 
-              {/* <Route
-                path="/company/interviews"
-                element={
-                  <CompanyRoute user={user}></CompanyRoute>
-                }
-              /> */}
-
               {/* Candidate Routes */}
               <Route
                 path="/candidate/all-assessments"
                 element={
                   <JobSeekerRoute user={user}>
                     <AllAssessmentJobSeeker />
+                  </JobSeekerRoute>
+                }
+              />
+              <Route
+                path="/candidate/all-interviews"
+                element={
+                  <JobSeekerRoute user={user}>
+                    <AllInterviewsCandidate />
                   </JobSeekerRoute>
                 }
               />
@@ -123,6 +125,15 @@ function App() {
                   <CompanyRoute user={user}>
                     <SingleAssessmentCompany />
                   </CompanyRoute>
+                }
+              />
+              {/* Common Routes */}
+              <Route
+                path="/room/interview/:id"
+                element={
+                  <CommonRoute user={user}>
+                    <InterviewRoom />
+                  </CommonRoute>
                 }
               />
             </Routes>
