@@ -1,9 +1,10 @@
-import { useMemo } from "react";
 import { create } from "zustand";
 import { io } from "socket.io-client";
 
+const socket = io("ws://127.0.0.1:8000/ws/video", []);
+
 const socketStore = create((set) => ({
-  socket: useMemo(() => io("http://localhost:5000", []), []),
+  socket: socket,
 }));
 
 export default socketStore;

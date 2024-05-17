@@ -46,9 +46,9 @@ const AnswerSchema = Yup.object().shape({
   answer_text: Yup.string().required("Answer is Required"),
 });
 
-const RoomJoinSchema = Yup.object().shape({
-  room_id: Yup.string().required("Room code is required"),
-  email: Yup.string().email("Invalid email").required("Email is Required"),
+const ScheduleInterviewSchema = Yup.object().shape({
+  room_name: Yup.string().required("Room Name is required"),
+  candidate_id: Yup.string().required("Candidate ID is required"),
 });
 
 export {
@@ -57,5 +57,5 @@ export {
   QuestionSchema,
   AssessmentSchema,
   AnswerSchema,
-  RoomJoinSchema,
+  ScheduleInterviewSchema,
 };

@@ -18,6 +18,9 @@ import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessmen
 import AssessmentEditPage from "./pages/company-assessment/all-assessments/AssessmentEditPage";
 import ResultAssessmentPage from "./pages/job-seeker-assesment/all-assessments/ResultAssessmentPage";
 import Lobby from "./pages/screens/Lobby";
+import AllInterviewsCandidate from "./pages/AllInterviewsCandidate/AllInterviewsCandidate";
+import Room from "./pages/screens/Room";
+import AllInterviewsCompany from "./pages/AllInterviewsCompany/AllInterviewsCompany";
 
 function App() {
   const user = userAuthStore((state) => state.user);
@@ -27,7 +30,21 @@ function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
+              {/* Temporary Paths */}
+              <Route
+                path="/company/all-interviews"
+                element={<AllInterviewsCompany />}
+              />
+
+              <Route
+                path="/candidate/all-interviews"
+                element={<AllInterviewsCandidate />}
+              />
+
+              {/* ,...... */}
+
               <Route path="/lobby" element={<Lobby />} />
+              <Route path="/room" element={<Room />} />
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               {/* Authentication Routes */}
@@ -59,6 +76,13 @@ function App() {
                   </CompanyRoute>
                 }
               />
+
+              {/* <Route
+                path="/company/interviews"
+                element={
+                  <CompanyRoute user={user}></CompanyRoute>
+                }
+              /> */}
 
               {/* Candidate Routes */}
               <Route
