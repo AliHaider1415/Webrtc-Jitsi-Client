@@ -1,7 +1,8 @@
 import React from "react";
 import { Card, CardBody, CardHeader, CardText, Button } from "reactstrap";
 import styles from "../../utils/styles";
-export default function CompanyInterviewBox() {
+export default function CompanyInterviewBox(props) {
+  const { interview } = props;
   return (
     <Card
       className="d-flex flex-row align-items-center my-2"
@@ -9,7 +10,7 @@ export default function CompanyInterviewBox() {
     >
       <div className="flex-grow-1">
         <CardHeader style={{ width: "200px", height: "105px" }}>
-          <h5 style={{ marginBottom: "0" }}>Interview Title</h5>
+          <h5 style={{ marginBottom: "0" }}>{interview.room_name}</h5>
         </CardHeader>
         <CardBody>
           <CardText
@@ -24,7 +25,7 @@ export default function CompanyInterviewBox() {
             className="fw-bold text-center"
             style={styles.descriptionColor}
           >
-            For Candidate :9
+            For Candidate :{interview.candidates}
           </CardText>
         </CardBody>
       </div>

@@ -48,7 +48,7 @@ const AnswerSchema = Yup.object().shape({
 
 const ScheduleInterviewSchema = Yup.object().shape({
   room_name: Yup.string().required("Room Name is required"),
-  candidate_id: Yup.string().required("Candidate ID is required"),
+  candidate_id: Yup.number().required("Candidate ID is required"),
 });
 
 export {

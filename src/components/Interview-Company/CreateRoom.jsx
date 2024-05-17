@@ -17,14 +17,20 @@ import url from "../../utils/api";
 import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
 import styles from "../../utils/styles";
-
+import { toast } from "react-toastify";
 export default function CreateRoom() {
   const createRoom = useMutation({
     mutationFn: (values) => {
       const protocol = window.location.protocol;
       return axios.post(
-        `${protocol}//${url}/assessment/create-assessment`,
-        values,
+        `${protocol}//${url}/room/create-room`,
+
+        {
+          room_data: {
+            room_name: values.room_name,
+            candidates: values.candidate_id,
+          },
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access")}`,
@@ -33,17 +39,18 @@ export default function CreateRoom() {
       );
     },
     onSuccess: (data) => {
-      //   queryClient.invalidateQueries("assessment");
-      //   toast.success(data.data.message);
+      toast.success(data.data.message);
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error("Error creating room");
     },
   });
 
-  const handleCreateAssessment = async (values) => {
+  const handleCreateRoom = async (values) => {
     await createRoom.mutate({
-      assessment: {
-        title: values.title,
-        description: values.description,
-      },
+      room_name: values.room_name,
+      candidate_id: values.candidate_id,
     });
   };
   return (
@@ -55,7 +62,7 @@ export default function CreateRoom() {
         }}
         validationSchema={ScheduleInterviewSchema}
         onSubmit={(values) => {
-          console.log(values);
+          handleCreateRoom(values);
         }}
       >
         {({
@@ -77,7 +84,7 @@ export default function CreateRoom() {
                           className="text-center mb-4 fw-bold"
                           style={styles.descriptionColor}
                         >
-                          Shedule New Interview
+                          Schedule New Interview
                         </h1>
                       </Col>
                     </Row>
