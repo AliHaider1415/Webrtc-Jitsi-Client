@@ -8,7 +8,6 @@ export default function TestRoom() {
   const { id } = useParams();
   const [remoteStream, setRemoteStream] = useState(null);
   const [remoteSocketId, setRemoteSocketId] = useState(null);
-  const [incomingCall, setIncomingCall] = useState({ data: "", status: false });
   const [myStream, setMyStream] = useState(null);
 
   useEffect(() => {
@@ -124,16 +123,18 @@ export default function TestRoom() {
     const offer = await peer.getOffer();
 
     // Send the offer object to the peer via WebSocket
-    sendJsonMessage({ type: "peer:nego:needed", offer, to: remoteSocketId });
+    sendJsonMessage({ type: "peer:nego:needed", offer });
+    handleNegotiationIncoming(offer);
   }, [sendJsonMessage, peer, remoteSocketId]);
 
   const handleNegotiationIncoming = useCallback(
     async (data) => {
-      const { offer, from } = data;
-      const ans = await peer.getAnswer(offer);
+      console.log(data);
+      const ans = await peer.getAnswer(data);
 
-      // Send the answer object to the peer via WebSocket
-      sendJsonMessage({ type: "peer:nego:done", to: from, ans });
+      // // Send the answer object to the peer via WebSocket
+      sendJsonMessage({ type: "peer:nego:done", ans });
+      handleNegotiationFinal(ans);
     },
     [sendJsonMessage, peer]
   );
@@ -142,27 +143,8 @@ export default function TestRoom() {
     const { ans } = data;
 
     // Set the local description based on the received answer
-    peer.setLocalDescription(ans);
   }, []);
-  // useEffect(() => {
-  //   console.log("negotiationneeded");
-  //   peer.peer.addEventListener("negotiationneeded", handleNegotiationNeeded);
-  //   return () => {
-  //     peer.peer.removeEventListener(
-  //       "negotiationneeded",
-  //       handleNegotiationNeeded
-  //     );
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   console.log("track");
 
-  //   peer.peer.addEventListener("track", async (event) => {
-  //     console.log("remote");
-  //     const remoteStreams = event.streams;
-  //     setRemoteStream(remoteStreams[0]);
-  //   });
-  // }, []);
   useEffect(() => {
     if (peer.peer) {
       console.log("negotiationneeded");
@@ -199,8 +181,8 @@ export default function TestRoom() {
           playing
           muted
           controls
-          width="100%"
-          height="100%"
+          width="50%"
+          height="50%"
           url={myStream}
         />
       )}
@@ -208,11 +190,12 @@ export default function TestRoom() {
         <ReactPlayer
           playing
           controls
-          width="100%"
-          height="100%"
+          width="50%"
+          height="50%"
           url={remoteStream}
         />
       )}
+
       <button onClick={handleCallUser}>Call</button>
       {myStream && <button onClick={sendStream}>Negotiate</button>}
     </div>
