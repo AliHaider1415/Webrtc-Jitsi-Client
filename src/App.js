@@ -21,11 +21,11 @@ import "./App.css";
 import AttemptAssessmentPage from "./pages/job-seeker-assesment/Single-Assessment/AttemptAssessmentPage";
 import AssessmentEditPage from "./pages/company-assessment/all-assessments/AssessmentEditPage";
 import ResultAssessmentPage from "./pages/job-seeker-assesment/all-assessments/ResultAssessmentPage";
-import Lobby from "./pages/screens/Lobby";
 import AllInterviewsCandidate from "./pages/AllInterviewsCandidate/AllInterviewsCandidate";
 import Room from "./pages/screens/Room";
 import AllInterviewsCompany from "./pages/AllInterviewsCompany/AllInterviewsCompany";
 import InterviewRoom from "./pages/InterviewRoom/InterviewRoom";
+import TestRoom from "./pages/screens/TestRoom";
 
 function App() {
   const user = userAuthStore((state) => state.user);
@@ -35,7 +35,6 @@ function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
-              <Route path="/lobby" element={<Lobby />} />
               <Route path="/room" element={<Room />} />
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
@@ -132,7 +131,8 @@ function App() {
                 path="/room/interview/:id"
                 element={
                   <CommonRoute user={user}>
-                    <InterviewRoom />
+                    {/* <InterviewRoom /> */}
+                    <TestRoom />
                   </CommonRoute>
                 }
               />

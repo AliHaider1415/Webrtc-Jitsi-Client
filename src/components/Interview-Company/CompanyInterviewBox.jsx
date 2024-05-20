@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardHeader, CardText, Button } from "reactstrap";
 import styles from "../../utils/styles";
+import { Link } from "react-router-dom";
 export default function CompanyInterviewBox(props) {
   const { interview } = props;
   return (
@@ -30,7 +31,9 @@ export default function CompanyInterviewBox(props) {
         </CardBody>
       </div>
       <div className="text-center">
-        <Button style={styles.primaryButton}>Start Interview</Button>
+        <Link to={`/room/interview/${interview.id}`}>
+          <Button style={styles.primaryButton}>Start Interview</Button>
+        </Link>
       </div>
     </Card>
   );

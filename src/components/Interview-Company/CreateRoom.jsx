@@ -18,13 +18,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Formik } from "formik";
 import styles from "../../utils/styles";
 import { toast } from "react-toastify";
-export default function CreateRoom() {
+
+export default function CreateRoom({ onSuccess }) {
   const createRoom = useMutation({
     mutationFn: (values) => {
       const protocol = window.location.protocol;
       return axios.post(
         `${protocol}//${url}/room/create-room`,
-
         {
           room_data: {
             room_name: values.room_name,
@@ -40,6 +40,7 @@ export default function CreateRoom() {
     },
     onSuccess: (data) => {
       toast.success(data.data.message);
+      onSuccess();
     },
     onError: (error) => {
       console.log(error);
@@ -53,6 +54,7 @@ export default function CreateRoom() {
       candidate_id: values.candidate_id,
     });
   };
+
   return (
     <CardBody>
       <Formik
@@ -61,8 +63,9 @@ export default function CreateRoom() {
           candidate_id: "",
         }}
         validationSchema={ScheduleInterviewSchema}
-        onSubmit={(values) => {
+        onSubmit={(values, { resetForm }) => {
           handleCreateRoom(values);
+          resetForm();
         }}
       >
         {({
@@ -73,7 +76,7 @@ export default function CreateRoom() {
           handleBlur,
           handleSubmit,
         }) => (
-          <Container className="mt-5  ">
+          <Container className="mt-5">
             <Card style={styles.assessmentModuleBackground}>
               <CardBody>
                 <Form>
@@ -95,7 +98,6 @@ export default function CreateRoom() {
                             Room Name
                           </Label>
                           <Input
-                            id="exampleText"
                             name="room_name"
                             placeholder="Enter Room Name"
                             type="text"
@@ -121,7 +123,6 @@ export default function CreateRoom() {
                             Candidate ID
                           </Label>
                           <Input
-                            id="exampleText"
                             name="candidate_id"
                             placeholder="Enter Candidate ID"
                             type="number"
@@ -142,7 +143,6 @@ export default function CreateRoom() {
                         </div>
                       </Col>
                     </Row>
-
                     <Button
                       className="mx-1 mt-2"
                       onClick={handleSubmit}

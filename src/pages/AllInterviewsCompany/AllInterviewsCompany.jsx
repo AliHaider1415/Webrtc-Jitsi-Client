@@ -4,9 +4,12 @@ import styles from "../../utils/styles";
 import { Container } from "reactstrap";
 import CompanyInterviewBox from "../../components/Interview-Company/CompanyInterviewBox";
 import url from "../../utils/api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+
 export default function AllInterviewsCompany() {
+  const queryClient = useQueryClient();
+
   const fetchInterviewsCompany = async () => {
     try {
       const protocol = window.location.protocol;
@@ -27,25 +30,27 @@ export default function AllInterviewsCompany() {
     }
   };
 
-  const { isPending, isError, data, error } = useQuery({
+  const { isLoading, isError, data, error } = useQuery({
     queryKey: ["interviews"],
     queryFn: fetchInterviewsCompany,
   });
 
-  if (isPending) return <div>Loading...</div>;
-  if (isError) return <div>Error in {error.message}</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+
   return (
     <div>
-      <CreateRoom />
+      <CreateRoom
+        onSuccess={() => queryClient.invalidateQueries(["interviews"])}
+      />
       <h1 className="text-center fw-bold my-2" style={styles.descriptionColor}>
         Interviews Scheduled By You
       </h1>
-
-      <Container className="d-flex  justify-content-around flex-wrap my-2">
+      <Container className="d-flex justify-content-around flex-wrap my-2">
         {data.length > 0 ? (
           data.map((interview) => (
-            <div className="mx-2 my-2">
-              <CompanyInterviewBox key={interview.id} interview={interview} />
+            <div className="mx-2 my-2" key={interview.id}>
+              <CompanyInterviewBox interview={interview} />
             </div>
           ))
         ) : (
@@ -53,7 +58,6 @@ export default function AllInterviewsCompany() {
             No Interview under your company
           </h1>
         )}
-        {data.length && console.log(data)}
       </Container>
     </div>
   );
