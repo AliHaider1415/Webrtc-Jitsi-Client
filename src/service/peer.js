@@ -86,6 +86,8 @@ class PeerService {
   }
 
   async setLocalDescription(description) {
+    console.log("Local", description);
+
     if (!this.peer || this.peer.signalingState === "closed") {
       this.reinitializePeer();
     }
@@ -100,6 +102,7 @@ class PeerService {
   }
 
   async setRemoteDescription(description) {
+    console.log("Remote", description);
     if (!this.peer || this.peer.signalingState === "closed") {
       this.reinitializePeer();
     }
