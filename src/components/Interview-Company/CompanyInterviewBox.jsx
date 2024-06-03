@@ -12,6 +12,7 @@ export default function CompanyInterviewBox(props) {
       <div className="flex-grow-1">
         <CardHeader style={{ width: "200px", height: "105px" }}>
           <h5 style={{ marginBottom: "0" }}>{interview.room_name}</h5>
+          <h6> {interview.id}</h6>
         </CardHeader>
         <CardBody>
           <CardText
@@ -25,9 +26,7 @@ export default function CompanyInterviewBox(props) {
           <CardText
             className="fw-bold text-center"
             style={styles.descriptionColor}
-          >
-            For Candidate :{interview.candidates}
-          </CardText>
+          ></CardText>
         </CardBody>
       </div>
       <div className="text-center">

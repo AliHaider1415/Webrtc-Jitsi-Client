@@ -50,6 +50,7 @@ export default function AllInterviewsCompany() {
         {data.length > 0 ? (
           data.map((interview) => (
             <div className="mx-2 my-2" key={interview.id}>
+              {console.log(interview)}
               <CompanyInterviewBox interview={interview} />
             </div>
           ))
