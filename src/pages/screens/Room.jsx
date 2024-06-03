@@ -28,86 +28,40 @@ export default function Room() {
 
     return () => {
       if (stream) {
-        stream.getTracks().forEach((track) => {
-          track.stop();
-        });
+        stream.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
 
-  const toggleVideo = async () => {
-    if (isVideoEnabled) {
-      if (stream) {
-        const videoTrack = stream.getVideoTracks()[0];
-        if (videoTrack) {
-          videoTrack.stop();
-          const newStream = new MediaStream(stream.getAudioTracks());
-          setStream(newStream);
-          if (videoRef.current) {
-            videoRef.current.srcObject = newStream;
-          }
-          setIsVideoEnabled(false);
-        }
-      }
-    } else {
-      try {
-        const videoStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        const newStream = new MediaStream([
-          ...videoStream.getVideoTracks(),
-          ...stream.getAudioTracks(),
-        ]);
-        setStream(newStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = newStream;
-        }
-        setIsVideoEnabled(true);
-      } catch (error) {
-        console.error("Error accessing video devices.", error);
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
+
+  const toggleVideo = () => {
+    if (stream) {
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !isVideoEnabled;
+        setIsVideoEnabled(!isVideoEnabled);
       }
     }
   };
 
-  const toggleAudio = async () => {
-    if (isAudioEnabled) {
-      if (stream) {
-        const audioTrack = stream.getAudioTracks()[0];
-        if (audioTrack) {
-          audioTrack.stop();
-          const newStream = new MediaStream(stream.getVideoTracks());
-          setStream(newStream);
-          if (videoRef.current) {
-            videoRef.current.srcObject = newStream;
-          }
-          setIsAudioEnabled(false);
-        }
-      }
-    } else {
-      try {
-        const audioStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        const newStream = new MediaStream([
-          ...stream.getVideoTracks(),
-          ...audioStream.getAudioTracks(),
-        ]);
-        setStream(newStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = newStream;
-        }
-        setIsAudioEnabled(true);
-      } catch (error) {
-        console.error("Error accessing audio devices.", error);
+  const toggleAudio = () => {
+    if (stream) {
+      const audioTrack = stream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !isAudioEnabled;
+        setIsAudioEnabled(!isAudioEnabled);
       }
     }
   };
 
   const endCall = () => {
     if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-      });
+      stream.getTracks().forEach((track) => track.stop());
       setStream(null);
     }
   };
