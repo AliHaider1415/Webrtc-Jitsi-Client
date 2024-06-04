@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
-import peer from "../../service/peer";
 import ReactPlayer from "react-player";
 import { Button } from "reactstrap";
 
@@ -45,9 +44,14 @@ export default function TestRoom() {
     }
   );
 
+  const configuration = {
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  };
+  const peer = new RTCPeerConnection(configuration);
+
   useEffect(() => {
-    if (peer.peer) {
-      peer.peer.ontrack = (event) => {
+    if (peer) {
+      peer.ontrack = (event) => {
         const [stream] = event.streams;
         setRemoteStream(stream);
       };
@@ -58,21 +62,21 @@ export default function TestRoom() {
       if (myStream) {
         myStream.getTracks().forEach((track) => track.stop());
       }
-      if (peer.peer) {
-        peer.peer.close();
+      if (peer) {
+        peer.close();
       }
     };
   }, [myStream]);
 
   const handleAcceptAnswer = async (answer) => {
-    if (peer.peer.signalingState !== "closed") {
-      peer.peer
+    if (peer.signalingState !== "closed") {
+      peer
         .setRemoteDescription(answer)
         .catch((error) => console.error("Error accepting answer", error));
 
       console.log(
         " answer:::Ye remote description hai",
-        peer.peer.remoteDescription
+        peer.remoteDescription
       );
     } else {
       console.log("connection is cloesed");
@@ -88,13 +92,29 @@ export default function TestRoom() {
 
       setMyStream(stream);
 
-      sendStream();
-      // for (const track of stream.getTracks()) {
-      //   peer.peer.addTrack(track);
-      // }
-      const offer = await peer.getOffer();
+      for (const track of stream.getTracks()) {
+        peer.addTrack(track);
+      }
+      // console.log("peer", peer);
+      const offer = await peer.createOffer();
 
-      peer.peer.setLocalDescription(offer);
+      // console.log("after create offer here");
+
+      await peer.setLocalDescription(offer);
+      console.log("localDesc", peer.localDescription);
+
+      // Listen for local ICE candidates on the local RTCPeerConnection
+      peer.addEventListener("icecandidate", (event) => {
+        if (event.candidate) {
+          // signalingChannel.send({'new-ice-candidate': event.candidate});
+          console.log("New ICE candidate", event.candidate);
+        }
+      });
+
+      // console.log("Ye local description hai", peer.peer.localDescription);
+      // console.log("stream tracks:", stream.getTracks());
+
+      // console.log("mss ali ", offer);
 
       sendJsonMessage({ type: "offer", offer });
     } catch (error) {
@@ -109,12 +129,12 @@ export default function TestRoom() {
         audio: true,
       });
       // console.log("incoming", incomingCall);
-      const answer = await peer.getAnswer(incomingCall);
-      peer.peer.setRemoteDescription(incomingCall);
+      const answer = await peer.createAnswer(incomingCall);
+      peer.setRemoteDescription(incomingCall);
       // console.log("Ye remote description hai", peer.peer.remoteDescription);
       setMyStream(stream);
-      peer.peer.setLocalDescription(answer);
-      console.log("ans:ye local description hai", peer.peer.localDescription);
+      peer.setLocalDescription(answer);
+      console.log("ans:ye local description hai", peer.localDescription);
       sendJsonMessage({ type: "answer", answer });
     } catch (error) {
       console.error("Error accepting call", error);
@@ -123,15 +143,12 @@ export default function TestRoom() {
 
   const sendStream = async () => {
     try {
-      console.log("Paeen");
-      console.log(myStream);
       for (const track of myStream.getTracks()) {
-        if (!peer.peer.getSenders().find((sender) => sender.track === track)) {
-          peer.peer.addTrack(track, myStream);
+        if (!peer.getSenders().find((sender) => sender.track === track)) {
+          peer.addTrack(track, myStream);
         }
       }
     } catch (error) {
-      console.log("Error in sending stream");
       console.log(error);
     }
   };
