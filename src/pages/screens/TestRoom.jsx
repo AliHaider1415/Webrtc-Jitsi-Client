@@ -40,6 +40,14 @@ export default function TestRoom() {
         ) {
           handleAcceptAnswer(parsedMessage.answer);
         }
+        if (
+          parsedMessage.type === "incoming_ice_candidate" &&
+          parsedMessage.sender_id !== myId
+        ) {
+          // console.log("testing");
+          // console.log("Here is ice candidate", parsedMessage.answer);
+          peer.addIceCandidate(parsedMessage.answer);
+        }
       },
     }
   );
@@ -95,27 +103,19 @@ export default function TestRoom() {
       for (const track of stream.getTracks()) {
         peer.addTrack(track);
       }
-      // console.log("peer", peer);
       const offer = await peer.createOffer();
-
-      // console.log("after create offer here");
 
       await peer.setLocalDescription(offer);
       console.log("localDesc", peer.localDescription);
 
-      // Listen for local ICE candidates on the local RTCPeerConnection
       peer.addEventListener("icecandidate", (event) => {
         if (event.candidate) {
-          // signalingChannel.send({'new-ice-candidate': event.candidate});
-          console.log("New ICE candidate", event.candidate);
+          sendJsonMessage({
+            type: "ice-candidates",
+            candidate: event.candidate,
+          });
         }
       });
-
-      // console.log("Ye local description hai", peer.peer.localDescription);
-      // console.log("stream tracks:", stream.getTracks());
-
-      // console.log("mss ali ", offer);
-
       sendJsonMessage({ type: "offer", offer });
     } catch (error) {
       console.log("Error accessing media devices.", error);
