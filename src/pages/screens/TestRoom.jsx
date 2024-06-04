@@ -20,7 +20,7 @@ export default function TestRoom() {
       onOpen: () => console.log("Connected to the room"),
       onClose: () => console.log("Disconnected from the room"),
       onMessage: (message) => {
-        console.log("Received message:", message);
+        // console.log("Received message:", message);
 
         const parsedMessage = JSON.parse(message.data);
         if (
@@ -58,6 +58,12 @@ export default function TestRoom() {
   const peer = new RTCPeerConnection(configuration);
 
   useEffect(() => {
+    if (peer.connectionState === "connected") {
+      console.log("Connection is established");
+    }
+  }, [peer.connectionState]);
+
+  useEffect(() => {
     if (peer) {
       peer.ontrack = (event) => {
         const [stream] = event.streams;
@@ -86,6 +92,16 @@ export default function TestRoom() {
         " answer:::Ye remote description hai",
         peer.remoteDescription
       );
+
+      peer.addEventListener("icecandidate", (event) => {
+        if (event.candidate) {
+          // console.log(event.candidate); Working
+          sendJsonMessage({
+            type: "ice-candidates",
+            candidate: event.candidate,
+          });
+        }
+      });
     } else {
       console.log("connection is cloesed");
     }
@@ -108,14 +124,15 @@ export default function TestRoom() {
       await peer.setLocalDescription(offer);
       console.log("localDesc", peer.localDescription);
 
-      peer.addEventListener("icecandidate", (event) => {
-        if (event.candidate) {
-          sendJsonMessage({
-            type: "ice-candidates",
-            candidate: event.candidate,
-          });
-        }
-      });
+      // peer.addEventListener("icecandidate", (event) => {
+      //   if (event.candidate) {
+      //     // console.log(event.candidate); Working
+      //     sendJsonMessage({
+      //       type: "ice-candidates",
+      //       candidate: event.candidate,
+      //     });
+      //   }
+      // });
       sendJsonMessage({ type: "offer", offer });
     } catch (error) {
       console.log("Error accessing media devices.", error);
@@ -129,8 +146,8 @@ export default function TestRoom() {
         audio: true,
       });
       // console.log("incoming", incomingCall);
-      const answer = await peer.createAnswer(incomingCall);
       peer.setRemoteDescription(incomingCall);
+      const answer = await peer.createAnswer(incomingCall);
       // console.log("Ye remote description hai", peer.peer.remoteDescription);
       setMyStream(stream);
       peer.setLocalDescription(answer);
