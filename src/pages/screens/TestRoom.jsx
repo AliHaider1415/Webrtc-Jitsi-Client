@@ -29,8 +29,7 @@ export default function TestRoom() {
           parsedMessage.sender_id !== myId
         ) {
           setSenderId(parsedMessage.sender_id);
-          console.log(parsedMessage.offer);
-
+          // console.log(parsedMessage.offer);
           setIncomingCall(parsedMessage.offer);
         } else if (parsedMessage.type === "incoming_offer") {
           setSenderId(parsedMessage.sender_id);
@@ -40,10 +39,7 @@ export default function TestRoom() {
           parsedMessage.type === "incoming_answer" &&
           senderId === myId
         ) {
-          console.log("Incoming answer", parsedMessage.answer);
-          peer.setRemoteDescription(parsedMessage.answer);
-        } else if (parsedMessage.type === "ice-candidate") {
-          peer.addIceCandidate(parsedMessage.candidate);
+          handleAcceptAnswer(parsedMessage.answer);
         }
       },
     }
@@ -58,6 +54,7 @@ export default function TestRoom() {
     }
 
     return () => {
+      // Clean up media stream and peer connection
       if (myStream) {
         myStream.getTracks().forEach((track) => track.stop());
       }
@@ -67,18 +64,41 @@ export default function TestRoom() {
     };
   }, [myStream]);
 
+  const handleAcceptAnswer = async (answer) => {
+    if (peer.peer.signalingState !== "closed") {
+      peer.peer
+        .setRemoteDescription(answer)
+        .catch((error) => console.error("Error accepting answer", error));
+
+      console.log(
+        " answer:::Ye remote description hai",
+        peer.peer.remoteDescription
+      );
+    } else {
+      console.log("connection is cloesed");
+    }
+  };
+
   const handleCallUser = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
-      const offer = await peer.getOffer();
-      peer.setLocalDescription(offer);
-      sendJsonMessage({ type: "offer", offer });
+
       setMyStream(stream);
+
+      sendStream();
+      // for (const track of stream.getTracks()) {
+      //   peer.peer.addTrack(track);
+      // }
+      const offer = await peer.getOffer();
+
+      peer.peer.setLocalDescription(offer);
+
+      sendJsonMessage({ type: "offer", offer });
     } catch (error) {
-      console.error("Error accessing media devices.", error);
+      console.log("Error accessing media devices.", error);
     }
   };
 
@@ -88,27 +108,33 @@ export default function TestRoom() {
         video: true,
         audio: true,
       });
-
-      await peer.setRemoteDescription(incomingCall);
-
+      // console.log("incoming", incomingCall);
       const answer = await peer.getAnswer(incomingCall);
-      peer.setLocalDescription(answer);
-
-      sendJsonMessage({ type: "answer", answer });
-
+      peer.peer.setRemoteDescription(incomingCall);
+      // console.log("Ye remote description hai", peer.peer.remoteDescription);
       setMyStream(stream);
+      peer.peer.setLocalDescription(answer);
+      console.log("ans:ye local description hai", peer.peer.localDescription);
+      sendJsonMessage({ type: "answer", answer });
     } catch (error) {
       console.error("Error accepting call", error);
     }
   };
-  useEffect(() => {
-    if (myStream !== null) {
-      console.log(peer.peer);
-      myStream.getTracks().forEach((track) => {
-        peer.peer.addTrack(track, myStream);
-      });
+
+  const sendStream = async () => {
+    try {
+      console.log("Paeen");
+      console.log(myStream);
+      for (const track of myStream.getTracks()) {
+        if (!peer.peer.getSenders().find((sender) => sender.track === track)) {
+          peer.peer.addTrack(track, myStream);
+        }
+      }
+    } catch (error) {
+      console.log("Error in sending stream");
+      console.log(error);
     }
-  }, [myStream]);
+  };
 
   return (
     <div>
@@ -127,7 +153,6 @@ export default function TestRoom() {
           url={myStream}
         />
       )}
-
       {remoteStream && (
         <ReactPlayer
           playing

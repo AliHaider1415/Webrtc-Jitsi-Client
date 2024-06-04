@@ -1,6 +1,7 @@
 class PeerService {
   constructor() {
     this.peer = null;
+    this.initializePeer();
   }
 
   initializePeer() {
@@ -26,16 +27,18 @@ class PeerService {
       try {
         const offer = await this.peer.createOffer();
         await this.peer.setLocalDescription(offer);
-        // Handle the negotiation by sending the offer to the remote peer
+        console.log("Local description set with offer:", offer);
+        // Send the offer to the remote peer using your signaling server
       } catch (error) {
         console.error("Error during negotiation:", error);
       }
     });
 
     this.peer.addEventListener("icecandidate", (event) => {
+      console.log("ICE candidate event:", event);
       if (event.candidate) {
-        // Send the candidate to the remote peer
         console.log("New ICE candidate", event.candidate);
+        // Send the candidate to the remote peer using your signaling server
       }
     });
 
@@ -86,8 +89,7 @@ class PeerService {
   }
 
   async setLocalDescription(description) {
-    console.log("Local", description);
-
+    console.log("Setting local description:", description);
     if (!this.peer || this.peer.signalingState === "closed") {
       this.reinitializePeer();
     }
@@ -102,7 +104,7 @@ class PeerService {
   }
 
   async setRemoteDescription(description) {
-    console.log("Remote", description);
+    console.log("Setting remote description:", description);
     if (!this.peer || this.peer.signalingState === "closed") {
       this.reinitializePeer();
     }
@@ -113,6 +115,19 @@ class PeerService {
       );
     } catch (error) {
       console.error("Error setting remote description:", error);
+    }
+  }
+
+  async addIceCandidate(candidate) {
+    console.log("Adding ICE candidate:", candidate);
+    if (!this.peer || this.peer.signalingState === "closed") {
+      this.reinitializePeer();
+    }
+
+    try {
+      await this.peer.addIceCandidate(new RTCIceCandidate(candidate));
+    } catch (error) {
+      console.error("Error adding ICE candidate:", error);
     }
   }
 }
