@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
 import ReactPlayer from "react-player";
@@ -11,15 +11,47 @@ export default function TestRoom() {
   const [myId, setMyId] = useState(null);
   const [incomingCall, setIncomingCall] = useState(null);
   const [senderId, setSenderId] = useState(null);
+  const [iceCandidates, setIceCandidates] = useState([]);
+  const configuration = {
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  };
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(
+  useEffect(() => {
+    console.log("Received Ice Candidates", iceCandidates);
+  }, [iceCandidates]);
+
+  const peer = useRef(new RTCPeerConnection(configuration)).current;
+
+  const addingIceCandidates = async () => {
+    iceCandidates.forEach(async (candidate) => {
+      try {
+        await peer.addIceCandidate(candidate);
+        console.log("Ice Candidate Added");
+      } catch (error) {
+        console.error("Error adding received ICE candidate", error);
+      }
+    });
+  };
+  useEffect(() => {
+    if (peer.remoteDescription) {
+      addingIceCandidates();
+    }
+    console.log(peer.connectionState);
+    console.log("done");
+  }, [peer.remoteDescription]);
+
+  useEffect(() => {
+    console.log("Hello MSS", peer.iceConnectionState);
+  }, [peer.iceConnectionState]);
+
+  const { sendJsonMessage } = useWebSocket(
     `ws://127.0.0.1:8000/ws/video/${id}/?token=${localStorage.getItem(
       "access"
     )}`,
     {
       onOpen: () => console.log("Connected to the room"),
       onClose: () => console.log("Disconnected from the room"),
-      onMessage: (message) => {
+      onMessage: async (message) => {
         // console.log("Received message:", message);
 
         const parsedMessage = JSON.parse(message.data);
@@ -28,7 +60,6 @@ export default function TestRoom() {
           parsedMessage.sender_id !== myId
         ) {
           setSenderId(parsedMessage.sender_id);
-          // console.log(parsedMessage.offer);
           setIncomingCall(parsedMessage.offer);
         } else if (parsedMessage.type === "incoming_offer") {
           setSenderId(parsedMessage.sender_id);
@@ -38,72 +69,48 @@ export default function TestRoom() {
           parsedMessage.type === "incoming_answer" &&
           senderId === myId
         ) {
-          handleAcceptAnswer(parsedMessage.answer);
-        }
-        if (
+          await handleAcceptAnswer(parsedMessage.answer);
+        } else if (
           parsedMessage.type === "incoming_ice_candidate" &&
           parsedMessage.sender_id !== myId
         ) {
-          // console.log("testing");
-          // console.log("Here is ice candidate", parsedMessage.answer);
-          peer.addIceCandidate(parsedMessage.answer);
+          setIceCandidates([...iceCandidates, parsedMessage.candidate]);
+
+          // await peer.addIceCandidate(parsedMessage.candidate);
+          // console.log("Hello!", parsedMessage.candidate);
+
+          // await handleIncomingICECandidate(parsedMessage.candidate);
         }
       },
     }
   );
 
-  const configuration = {
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  const handleIncomingICECandidate = async (candidate) => {
+    try {
+      const iceCandidate = new RTCIceCandidate(candidate);
+      await peer.addIceCandidate(iceCandidate);
+    } catch (error) {
+      console.error("Error adding received ICE candidate", error);
+    }
   };
-  const peer = new RTCPeerConnection(configuration);
-
-  useEffect(() => {
-    if (peer.connectionState === "connected") {
-      console.log("Connection is established");
-    }
-  }, [peer.connectionState]);
-
-  useEffect(() => {
-    if (peer) {
-      peer.ontrack = (event) => {
-        const [stream] = event.streams;
-        setRemoteStream(stream);
-      };
-    }
-
-    return () => {
-      // Clean up media stream and peer connection
-      if (myStream) {
-        myStream.getTracks().forEach((track) => track.stop());
-      }
-      if (peer) {
-        peer.close();
-      }
-    };
-  }, [myStream]);
 
   const handleAcceptAnswer = async (answer) => {
-    if (peer.signalingState !== "closed") {
-      peer
-        .setRemoteDescription(answer)
-        .catch((error) => console.error("Error accepting answer", error));
+    try {
+      if (peer.signalingState === "have-local-offer") {
+        console.log(peer.signalingState);
+        const remoteDesc = new RTCSessionDescription(answer);
+        await peer.setRemoteDescription(remoteDesc);
+        console.log("Accepted answer", peer.signalingState);
 
-      console.log(
-        " answer:::Ye remote description hai",
-        peer.remoteDescription
-      );
-
-      peer.addEventListener("icecandidate", (event) => {
-        if (event.candidate) {
-          // console.log(event.candidate); Working
-          sendJsonMessage({
-            type: "ice-candidates",
-            candidate: event.candidate,
-          });
-        }
-      });
-    } else {
-      console.log("connection is cloesed");
+        console.log("local description", peer.localDescription);
+        console.log("remote description", peer.remoteDescription);
+      } else {
+        console.log(
+          "Peer connection is not in the correct state to accept an answer."
+        );
+      }
+    } catch (error) {
+      console.error("Error setting remote description on answer", error);
     }
   };
 
@@ -114,28 +121,46 @@ export default function TestRoom() {
         audio: true,
       });
 
-      setMyStream(stream);
-
       for (const track of stream.getTracks()) {
         peer.addTrack(track);
       }
+
+      // Tracks are added working
+      // const senders = peer.getSenders();
+      // senders.forEach((sender) =>
+      //   console.log(
+      //     `Sending track of sender: ${sender.track.kind}, id: ${sender.track.id}`
+      //   )
+      // );
+
+      const gotRemoteStream = (event) => {
+        console.log("Remote Stream of Sender: ", event.streams);
+      };
+
+      peer.ontrack = gotRemoteStream;
       const offer = await peer.createOffer();
-
       await peer.setLocalDescription(offer);
-      console.log("localDesc", peer.localDescription);
+      // console.log(
+      //   "Connection after setting local description",
+      //   peer.signalingState
+      // );
 
-      // peer.addEventListener("icecandidate", (event) => {
-      //   if (event.candidate) {
-      //     // console.log(event.candidate); Working
-      //     sendJsonMessage({
-      //       type: "ice-candidates",
-      //       candidate: event.candidate,
-      //     });
-      //   }
-      // });
-      sendJsonMessage({ type: "offer", offer });
+      sendJsonMessage({ type: "offer", offer, sender_id: myId });
+      peer.addEventListener("icecandidate", (event) => {
+        // Working
+        if (event.candidate) {
+          sendJsonMessage({
+            type: "ice_candidate",
+            candidate: event.candidate,
+            sender_id: myId,
+          });
+          console.log("Ice Candidates Sent to Receiver");
+        }
+      });
+
+      console.log("Successful HandleCallUser");
     } catch (error) {
-      console.log("Error accessing media devices.", error);
+      console.error("Error creating or sending offer", error);
     }
   };
 
@@ -145,28 +170,51 @@ export default function TestRoom() {
         video: true,
         audio: true,
       });
-      // console.log("incoming", incomingCall);
-      peer.setRemoteDescription(incomingCall);
-      const answer = await peer.createAnswer(incomingCall);
-      // console.log("Ye remote description hai", peer.peer.remoteDescription);
-      setMyStream(stream);
-      peer.setLocalDescription(answer);
-      console.log("ans:ye local description hai", peer.localDescription);
-      sendJsonMessage({ type: "answer", answer });
-    } catch (error) {
-      console.error("Error accepting call", error);
-    }
-  };
 
-  const sendStream = async () => {
-    try {
-      for (const track of myStream.getTracks()) {
-        if (!peer.getSenders().find((sender) => sender.track === track)) {
-          peer.addTrack(track, myStream);
-        }
+      for (const track of stream.getTracks()) {
+        peer.addTrack(track);
+      }
+
+      const gotRemoteStream = (event) => {
+        console.log("Remote Stream of Sender: ", event.streams);
+      };
+
+      peer.ontrack = gotRemoteStream;
+      if (
+        peer.signalingState === "stable" ||
+        peer.signalingState === "have-remote-offer"
+      ) {
+        await peer.setRemoteDescription(
+          new RTCSessionDescription(incomingCall)
+        );
+        const answer = await peer.createAnswer();
+        await peer.setLocalDescription(answer);
+        sendJsonMessage({ type: "answer", answer, sender_id: myId });
+
+        peer.addEventListener("icecandidate", (event) => {
+          // Working
+          if (event.candidate) {
+            // console.log("Ice Candidates of Receiver: ", event.candidate); working
+            // sendJsonMessage({
+            //   type: "ice_candidate",
+            //   candidate: event.candidate,
+            //   sender_id: myId,
+            // });
+            console.log("Ice Candidates Sent to Sender");
+          }
+        });
+
+        console.log("Successful HandleCallUser");
+
+        // console.log("local description", peer.localDescription);
+        // console.log("remote description", peer.remoteDescription);
+      } else {
+        console.error(
+          "Peer connection is not in the correct state to accept a call."
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error accepting call", error);
     }
   };
 
@@ -197,7 +245,7 @@ export default function TestRoom() {
         />
       )}
 
-      <button onClick={handleCallUser}>Call</button>
+      <Button onClick={handleCallUser}>Call</Button>
     </div>
   );
 }
